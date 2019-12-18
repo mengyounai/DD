@@ -8,10 +8,13 @@ import Detail from '../views/Detail.vue'
 import Cart from '../views/Cart.vue'
 import personal from '../views/personal'
 import list from '../views/List'
+import list2 from '../views/List2'
 import BookList from '../views/BookList'
 import aaa from '../views/aaa'
 import bbb from '../views/bbb'
 import state from '../views/state'
+import ccc from '../views/ccc'
+import credit from '../views/credit'
 Vue.use(VueRouter)
 
 const routes = [
@@ -41,7 +44,7 @@ const routes = [
         component:Details
     },
     {
-        path:'/detail',
+        path:'/detail/:id',
         name:'detail',
         component:Detail
     },
@@ -74,6 +77,21 @@ const routes = [
         path:'/state',
         name:'state',
         component:state
+    },
+    {
+        path:'/ccc',
+        name:'ccc',
+        component:ccc
+    },
+    {
+        path:'/credit',
+        name:'credit',
+        component:credit
+    },
+    {
+        path:'/list2',
+        name:'list2',
+        component:list2
     },
 ]
 

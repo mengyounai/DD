@@ -55,7 +55,7 @@
                 this.$router.push('/');
             }
             else {
-                axios.post("http://localhost:8080/api/getproductlist")
+                axios.post("http://localhost:8090/api/getproductlist")
                     .then((res)=>{
                         this.prodlist = res.data;
                         this.$store.commit('setProdList',this.prodlist);

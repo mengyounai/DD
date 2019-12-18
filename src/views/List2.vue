@@ -42,6 +42,7 @@
                         <ul class="ul2" v-for="(item,index) in showlist.slice(0, 4)" :info="item" :key="index">
                             <li>
                                 <router-link class="list1" :to="{name:'detail',params:{id:item.id}}">
+                                    <!--<a @click="doclick(item)"  class="list1">-->
                                     <div><img class="img1" :src="item.icon"></div>
 
                                     <div class="caption">
@@ -128,18 +129,16 @@
                         time: '',
                         ISBN: '',
                         type: '',
-                        score:'',
                         press: '',
                         disscussList:'',
                         profile:''
 
                     },
                 ],
-                booktype:'',
                 current: 1,
                 size: 4,
                 showlist: [],
-                showlist2: [{name:'',type:''}],
+                showlist2: [],
                 serachInfo: '',
 
             }
@@ -151,19 +150,6 @@
 
         },
 
-        // mounted(){
-        //     if (this.$store.state.loginuser == ''){
-        //         this.$router.push('/login');
-        //     }
-        //     else {
-        //         axios.post("http://localhost:8090/DDbook/book/index")
-        //             .then((res)=>{
-        //                 this.prodlist = res.data;
-        //                 this.$store.commit('setBookList',this.bookinfo);
-        //                 this.change(this.current);
-        //             })
-        //     }
-        // },
         mounted() {
             this.$store.commit('setBookList', this.bookinfo);
             this.change(this.current);
@@ -183,6 +169,7 @@
                         break;
                 }
             },
+
             doclick2() {
                 this.$store.commit('setBookList', this.bookinfo);
 
@@ -211,6 +198,7 @@
                     })
             }
 
+
         },
         created:function(){
             axios.get('http://'+this.$store.state.address+':8090/DDbook/book/index')
@@ -230,10 +218,13 @@
                     console.log(res.data.data);
 
                 }),
+
+            this.bookinfo=this.$store.state.SerachInfo
+
                 axios.get('http://'+this.$store.state.address+':8090/DDbook/type/index')
                     .then((res)=>{
                         this.showlist2 = res.data.data;
-                        console.log(res.data.data);
+                        console.log(this.$store.state.SerachInfo);
 
                     })
 
@@ -271,14 +262,14 @@
     .header a:hover {
         color: green;
     }
+    .header input,button{
+        border-radius: 0px;
+    }
 
     .header2 {
         width: 100%;
         height: 270px;
         background: transparent url(../images/header2.png) center center no-repeat;
-    }
-    .header input,button{
-        border-radius: 0px;
     }
 
     .content {

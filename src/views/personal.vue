@@ -7,7 +7,7 @@
                     <a href="http://localhost:8080/index"><img src="../images/DD阅读.png"></a>
                 </Col>
                 <Col :lg="{ span: 5, offset: 4 }">
-                    <Input search enter-button placeholder="Enter something..." class="input"/>
+                    <Input style="width: 200px" type="text" v-model="serachInfo"/><Button @click="dosearch" style="width: 50px;height: 30px" type="primary" icon="ios-search"></Button>
                 </Col>
                 <Col :xs="{ offset: 2 }">
                     <a href="http://localhost:8080/personal"><img src="../images/头像.png"
@@ -149,6 +149,7 @@
 </template>
 
 <script>
+    import axios from 'axios'
     export default {
         name: "personal",
         data () {
@@ -174,7 +175,8 @@
                     date: [
                         { required: false, type: 'date', message: 'Please select the date', trigger: 'change' }
                     ],
-                }
+                },
+                serachInfo: '',
             }
         },
         methods: {
@@ -190,8 +192,18 @@
             handleReset (name) {
                 this.$refs[name].resetFields();
             },
-            doclick(){
-                this.$router.push('/state');
+            dosearch() {
+                axios.post('http://'+this.$store.state.address+':8090/DDbook/book/selBookByName', {bookName: this.serachInfo,})
+                    .then((res)=>{
+
+                        this.$store.commit('setSerachInfo',res.data.data);
+                        this.$router.path({
+                            name: 'list2',
+
+                        })
+                        console.log(res.data.data);
+
+                    })
             }
 
         },
@@ -228,6 +240,9 @@
 
     .header a:hover {
         color: green;
+    }
+    .header input,button{
+        border-radius: 0px;
     }
 
     .header2 {

@@ -3,16 +3,16 @@
         <div class="header">
 
             <Row type="flex" justify="center" align="middle" class="code-row-bg">
-                <Col  :lg="{ span: 4, offset: 5 }">
+                <Col :lg="{ span: 4, offset: 5 }">
                     <a href="http://localhost:8080/index"><img src="../images/DD阅读.png"></a>
                 </Col>
-                <Col  :lg="{ span: 5, offset: 4 }">
-                    <Input search enter-button placeholder="Enter something..." class="input"/>
+                <Col :lg="{ span: 5, offset: 4 }">
+                    <Input style="width: 200px" type="text" v-model="serachInfo"/><Button @click="dosearch" style="width: 50px;height: 30px" type="primary" icon="ios-search"></Button>
                 </Col>
                 <Col :xs="{ offset: 2 }">
-                    <a href="http://localhost:8080/personal"><img src="../images/头像.png" style="width: 50px;height: 50px"></a>
-                        <!--<a href="http://localhost:8080/login"  >登录</a>/-->
-                       <!--<a href="http://localhost:8080/register"  >注册</a>-->
+                    <a class="a1" href="http://localhost:8080/personal"><img class="img1" src="../images/der.png"></a>
+                    <!--<a href="http://localhost:8080/login"  >登录</a>/-->
+                    <!--<a href="http://localhost:8080/register"  >注册</a>-->
 
                 </Col>
             </Row>
@@ -21,85 +21,71 @@
         <hr style="background-color: #cccccc">
         <div class="content" style="display: flex;">
             <div class="content1" style="width: 60%">
-                     <Carousel  v-model="value3"
-                                :autoplay="setting.autoplay"
-                                :autoplay-speed="setting.autoplaySpeed"
-                                :dots="setting.dots"
-                                :radius-dot="setting.radiusDot"
-                                :trigger="setting.trigger"
-                                :arrow="setting.arrow"
-                                >
-                         <Carousel-item>
-                             <div class="demo-carousel">
-                               <img class="demo-img" src="https://img.licilici.com/2019/12/02/5de48152a908d.jpg" />
-                             </div>
-                         </Carousel-item>
-                         <Carousel-item>
-                             <div class="demo-carousel">
-                               <img class="demo-img" src="https://img.licilici.com/2019/12/02/5de481511f518.jpg" />
-                             </div>
-                         </Carousel-item>
-                         <Carousel-item>
-                            <div class="demo-carousel">
-                               <img class="demo-img" src="https://img.licilici.com/2019/12/02/5de48145055fe.jpg">
-                             </div>
-                         </Carousel-item>
-                     </Carousel>
-                   </div>
-            <div  class="content2" style=" " >
-            <div>
-                <span class="span1"><a href="#"><img src="../images/作者中心.png"/></a> </span>
-            </div>
-            <div style="width: 100%;height: 70%;" >
-
-                <ul class="ul2">
-                    <span class="line"></span>
-                    <span> <li><a href="#"><img src="../images/签到.png"></a></li></span>
-                    <span class="line"></span>
-                    <span> <li><a href="http://localhost:8080/list"><img src="../images/书.png"></a></li></span>
-                    <span class="line"></span>
-                    <span> <li><a href="http://localhost:8080/state"><img src="../images/续.png"></a></li></span>
-                    <span class="line"></span>
-
-                    <div id="line1"><br><br><br><br><br><br><br>
-                        <div id="line2">
-                            <h3 style="text-align: center;">公告</h3>
-                            <ul class="ul3">
-                                <span><li>内容1</li></span>
-                                <span><li>内容1</li></span>
-                                <span><li>内容1</li></span>
-                            </ul>
+                <Carousel v-model="value3"
+                          :autoplay="setting.autoplay"
+                          :autoplay-speed="setting.autoplaySpeed"
+                          :dots="setting.dots"
+                          :radius-dot="setting.radiusDot"
+                          :trigger="setting.trigger"
+                          :arrow="setting.arrow"
+                >
+                    <Carousel-item v-for="(item,index) in NoticInfo " :info="item" :key="index">
+                        <div class="demo-carousel">
+                            <img class="demo-img" :src="item.noticeimg"/>
                         </div>
-                    </div>
-                </ul>
+                    </Carousel-item>
+
+                </Carousel>
             </div>
+            <div class="content2" style=" ">
+                <div>
+                    <span class="span1"><a href="#"><img src="../images/作者中心.png"/></a> </span>
+                </div>
+                <div style="width: 100%;height: 70%;">
+
+                    <ul class="ul2">
+                        <span class="line"></span>
+                        <span> <li><a href="#"><img src="../images/签到.png"></a></li></span>
+                        <span class="line"></span>
+                        <span> <li><a href="http://localhost:8080/list"><img src="../images/书.png"></a></li></span>
+                        <span class="line"></span>
+                        <span> <li><a href="http://localhost:8080/state"><img src="../images/续.png"></a></li></span>
+                        <span class="line"></span>
+
+                        <div id="line1"><br><br><br><br><br><br><br>
+                            <div id="line2">
+                                <h3 style="text-align: center;">公告</h3>
+                                <ul class="ul3" v-for="(item,index) in NoticInfo.slice(0, 3) " :info="item" :key="index">
+                                    <span><li>{{item.noticecon}}</li></span>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="content3">
             <div style="width: 65%">
                 <h3 style="margin:15px 0 0 180px">图书推荐</h3>
 
-            <ul class="ul1" style="margin:10px 0 0 180px">
-                <li><img src="https://img.licilici.com/2019/12/02/5de4ff21dd333.jpg"></li>
-                <li><img src="https://img.licilici.com/2019/12/02/5de4ff21dd333.jpg"></li>
-                <li><img src="https://img.licilici.com/2019/12/02/5de4ff21dd333.jpg"></li>
-                <li><img src="https://img.licilici.com/2019/12/02/5de4ff21dd333.jpg"></li>
-                <li><img src="https://img.licilici.com/2019/12/02/5de4ff21dd333.jpg"></li>
-            </ul>
+                <ul class="ul1" style="margin:10px 0 0 180px">
+                    <li><img src="https://img.licilici.com/2019/12/02/5de4ff21dd333.jpg"></li>
+                    <li><img src="https://img.licilici.com/2019/12/02/5de4ff21dd333.jpg"></li>
+                    <li><img src="https://img.licilici.com/2019/12/02/5de4ff21dd333.jpg"></li>
+                    <li><img src="https://img.licilici.com/2019/12/02/5de4ff21dd333.jpg"></li>
+                    <li><img src="https://img.licilici.com/2019/12/02/5de4ff21dd333.jpg"></li>
+                </ul>
             </div>
-            <div style="width: 30%">
-                <h3 style="margin-top: 20px">排行榜</h3>
-                <ul class="ul4">
-                    <li><a>1.aa</a></li>
-                    <li><a>2.bb</a></li>
-                    <li><a>3.cc</a></li>
-                    <li><a>4.dd</a></li>
-                    <li><a>5.ee</a></li>
+            <div style="width: 23%">
+                <h3 style="margin-top: 30px;margin-bottom: 2px">排行榜</h3>
+                <ul class="ul4" v-for="(item,index) in bookinfo.slice(0, 5) " :info="item" :key="index">
+                    <li><a>{{index+1}}.{{item.name}}</a></li>
                 </ul>
             </div>
 
 
-            </div>
+        </div>
         <div class="footer">
             <div class="footer1">
             </div>
@@ -137,6 +123,7 @@
 
                 <div class="row2">
                     <img src="../images/DD阅读2.png">
+                    <Button @click="doclick">点击</Button>
                 </div>
             </div>
 
@@ -147,15 +134,21 @@
 </template>
 
 <script>
+    import axios from 'axios'
     export default {
         name: "Index",
         data() {
             return {
-                imgArray: [
-                    'https://img.licilici.com/2019/12/02/5de48152a908d.jpg',
-                    'https://img.licilici.com/2019/12/02/5de481511f518.jpg',
-                    'https://img.licilici.com/2019/12/02/5de48145055fe.jpg',
+                NoticInfo: [
+                    {noticeid:'',noticetitle:'',noticecon:'',noticeimg:''},
+
                 ],
+                bookinfo:[
+                    {ISBN:'',name:'',click:''}
+
+                ],
+
+
                 value3: 0,
                 setting: {
                     autoplay: true,
@@ -164,22 +157,97 @@
                     radiusDot: false,
                     trigger: 'click',
                     arrow: 'hover',
-                }
+                },
+                serachInfo: '',
+                bookserach:[]
             }
+
+        },
+
+        methods: {
+            doclick() {
+                console.log(this.bookinfo)
+            },
+
+
+
+
+            dosearch() {
+                axios.post('http://'+this.$store.state.address+':8090/DDbook/book/selBookByName', {bookName: this.serachInfo,})
+                    .then((res)=>{
+
+                        this.$store.commit('setSerachInfo',res.data.data);
+                        this.$router.push({
+                            name: 'list2',
+
+                        })
+                        console.log(res.data.data);
+
+                    })
+                    }
+
+
+
+            // mounted(){
+            //     if (this.$store.state.loginuser == ''){
+            //         this.$router.push('/login');
+            //     }
+            //     else {
+            //         axios.post("http://localhost:8090/DDbook/book/index")
+            //             .then((res)=>{
+            //                 this.prodlist = res.data;
+            //                 this.$store.commit('setBookList',this.bookinfo);
+            //                 this.change(this.current);
+            //             })
+            //     }
+            //     if (this.$cookies.isKey('username')) {
+            //         let loginuser = this.$cookies.get('username')
+            //         this.$store.commit('setLoginUser',loginuser);
+            //         this.$router.push('/index');
+            //     }
+            //
+            // },
+
+            },
+        created:function(){
+            axios.get('http://'+this.$store.state.address+':8090/DDbook/notice/index')
+                .then((res)=>{
+                    this.NoticInfo = res.data.data;
+                    this.$store.commit('setNoticInfo',this.NoticInfo);
+                    console.log(res.data.data)
+                })
+
+            axios.get('http://'+this.$store.state.address+':8090/DDbook/book/index')
+                .then((res)=>{
+                    this.bookinfo = res.data.data;
+                    // this.$store.commit('setbookinfo',this.bookinfo);
+                    // for (var i = 0; i < ch1.length-1; i++) {
+                    //     for (var j = 0; j < ch1.length - i - 1; j++) {
+                    //         if (ch1[j][0] < ch1[j + 1][0]) {
+                    //             var d = ch1[j];
+                    //             ch1[j] = ch1[j + 1];
+                    //             ch1[j + 1] = d;
+                    //         }
+                    //     }
+                    // }
+                    console.log(res.data.data);
+
+                })
+
         }
+
+
     }
 
 </script>
 
 <style scoped>
 
-    *{
-        margin: 0;
-
+    * {
         /*border: 1px solid saddlebrown;*/
     }
 
-    .header{
+    .header {
 
         margin-left: -150px;
         margin-top: 10px;
@@ -187,186 +255,220 @@
         font-size: 16px;
 
     }
-    .header img{
+
+    .header img {
         height: 70%;
     }
-    .header a{
+
+    .header a {
         color: black;
     }
 
-    .header a:hover{
+    .header a:hover {
         color: green;
     }
-    .content{
+    .header input,button{
+        border-radius: 0px;
+    }
+
+
+    .img1 {
+        width: 54px;
+        height: 56px;
+        border-radius: 75px;
+        overflow: hidden;
+        /*background: rgba(232, 116, 41, 0.13);*/
+    }
+
+    .content {
         margin-top: 10px;
         width: 90%;
     }
-    .content1{
+
+    .content1 {
 
         margin-left: 100px;
-        width:60%;
+        width: 60%;
 
     }
 
-    .demo-carousel{
+    .demo-carousel {
         width: 70%;
         margin: 0 auto;
 
     }
-    .content1 img{
+
+    .content1 img {
         width: 100%;
     }
-    .content2{
-        float: right;width: 29%;
+
+    .content2 {
+        float: right;
+        width: 29%;
 
     }
 
-
-    .ul1 li{
+    .ul1 li {
 
         margin-right: 50px;
         display: inline-block;
     }
-    .ul2{
+
+    .ul2 {
         width: 100%;
         padding-left: 19px;
         margin-top: 10px;
 
     }
-    .ul2 li{
+
+    .ul2 li {
         /*border: 1px solid black;*/
         width: 68px;
         list-style: none;
         display: inline-block;
     }
-    .ul2 img{
+
+    .ul2 img {
         width: 100%;
     }
-    .line
-    {
-        display:inline-block;
-        width:8.5%;
-        border-top:1px solid #cccccc;
-        vertical-align:30px;
+
+    .line {
+        display: inline-block;
+        width: 8.5%;
+        border-top: 1px solid #cccccc;
+        vertical-align: 30px;
     }
 
-    .span1{
+    .span1 {
         margin-left: 40px
     }
-    #line1{
-        border-left:#ccc 1px solid;/*左边框，参数依次是颜色；粗细；类型-虚线、实线*/
-        border-right:#ccc 1px solid;
-        border-bottom:#ccc 1px solid;
+
+    #line1 {
+        border-left: #ccc 1px solid; /*左边框，参数依次是颜色；粗细；类型-虚线、实线*/
+        border-right: #ccc 1px solid;
+        border-bottom: #ccc 1px solid;
         height: 190px;
         width: 313px;
 
         margin-top: -36px;
     }
-    #line2{
 
-        border-top:#ccc 1px solid;
+    #line2 {
+
+        border-top: #ccc 1px solid;
         margin-top: -100px;
     }
 
-    .ul3{
+    .ul3 {
         width: 100%;
         padding-left: 19px;
         margin-top: 10px;
 
     }
-    .ul3 li{
+
+    .ul3 li {
         /*border: 1px solid black;*/
         width: 100%;
         list-style: none;
         display: inline-block;
     }
-    .content3{
+
+    .content3 {
         display: flex;
         width: 100%;
     }
-    .ul4{
+
+    .ul4 {
         list-style: none;
-    }
-    .ul4 li a{
-        color: black;
-    }
-    .ul4 li a:hover{
 
     }
-    .ul4 li:hover{
-        background: rgba(157,232,253,0.13);
+
+    .ul4 li a {
+        color: black;
     }
-    .footer{
+
+    .ul4 li a:hover {
+
+    }
+
+    .ul4 li:hover {
+        background: rgba(157, 232, 253, 0.13);
+    }
+
+    .footer {
         color: white;
         margin-top: 50px;
         width: 100%;
         height: 150px;
-        background: rgba(102,102,102,1);
+        background: rgba(102, 102, 102, 1);
     }
-    .footer li{
+
+    .footer li {
         list-style: none;
 
     }
-    .footer span{
-        color: rgba(204,204,204,1);
+
+    .footer span {
+        color: rgba(204, 204, 204, 1);
     }
-    .footer a{
+
+    .footer a {
         color: white;
     }
-    .footer1{
+
+    .footer1 {
         width: 100%;
         height: 8px;
-        background: rgba(0,167,134,0.75);
+        background: rgba(0, 167, 134, 0.75);
 
     }
-    .row{
+
+    .row {
         display: flex;
         position: relative;
         left: 15%;
-        top:8%;
+        top: 8%;
         width: 70%;
         height: 85%;
     }
-    .row1{
+
+    .row1 {
 
         width: 23%;
     }
-    .ul5{
-        border-right: 1px solid rgba(153,153,153,0.5);
+
+    .ul5 {
+        border-right: 1px solid rgba(153, 153, 153, 0.5);
         height: 40%;
         width: 85%;
 
     }
-    .ul5 li{
+
+    .ul5 li {
         margin-top: 10px;
 
         width: 50%;
         display: inline-block;
     }
-    .row2{
+
+    .row2 {
         position: relative;
-        top:15%;
+        top: 15%;
         left: 10%;
 
     }
-    .ul6{
+
+    .ul6 {
         height: 40%;
         width: 85%;
     }
-    .ul6 li{
+
+    .ul6 li {
         margin-top: 10px;
 
         width: 50%;
         display: inline-block;
     }
-
-
-
-
-
-
-
-
 
 
 </style>

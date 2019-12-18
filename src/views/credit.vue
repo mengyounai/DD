@@ -1,7 +1,6 @@
 <template>
     <div class="main">
 
-
         <div class="header">
             <Row type="flex" justify="center" align="middle" class="code-row-bg">
                 <Col :lg="{ span: 4, offset: 5 }">
@@ -24,85 +23,73 @@
             <div class="header2">
             </div>
             <div class="a">
-            <div class="content2" style="float: left;margin-top:0px">
-                <Menu active-name="0">
-                    <MenuGroup title="个人信息">
-                        <MenuItem name="1">
-                            <Icon type="md-document"/>
-                            <a href="http://localhost:8080/personal" >个人信息</a>
-                        </MenuItem>
-                        <MenuItem name="2">
-                            <Icon type="md-document"/>
-                            <a href="http://localhost:8080/state" >我的借阅</a>
-                        </MenuItem>
-                        <MenuItem name="3">
-                            <Icon type="md-document"/>
-                            <a href="#">信用分记录</a>
-                        </MenuItem>
-                    </MenuGroup>
-                    <MenuGroup title="关注中心">
-                        <MenuItem name="4">
-                            <Icon type="md-document"/>
-                            <a href="#">最近阅读</a>
-                        </MenuItem>
+                <div class="content2" style="float: left;margin-top:0px">
+                    <Menu active-name="0">
+                        <MenuGroup title="个人信息">
+                            <MenuItem name="1">
+                                <Icon type="md-document"/>
+                                <a href="http://localhost:8080/personal" >个人信息</a>
+                            </MenuItem>
+                            <MenuItem name="2">
+                                <Icon type="md-document"/>
+                                <a href="http://localhost:8080/state" >我的借阅</a>
+                            </MenuItem>
+                            <MenuItem name="3">
+                                <Icon type="md-document"/>
+                                <a href="#">信用分记录</a>
+                            </MenuItem>
+                        </MenuGroup>
+                        <MenuGroup title="关注中心">
+                            <MenuItem name="4">
+                                <Icon type="md-document"/>
+                                <a href="#">最近阅读</a>
+                            </MenuItem>
 
-                    </MenuGroup>
-                    <MenuGroup title="用户管理">
-                        <MenuItem name="5">
-                            <Icon type="md-document"/>
-                            <a href="#">修改密码</a>
-                        </MenuItem>
-                        <MenuItem name="6">
-                            <Icon type="md-chatbubbles" />
-                            <a href="#">
-                            退出
-                            </a>
-                        </MenuItem>
-                    </MenuGroup>
-                </Menu>
-            </div>
-            <div class="content1">
-                <div class="b">
-                    <a class="you">我的书架</a>
+                        </MenuGroup>
+                        <MenuGroup title="用户管理">
+                            <MenuItem name="5">
+                                <Icon type="md-document"/>
+                                <a href="#">修改密码</a>
+                            </MenuItem>
+                            <MenuItem name="6">
+                                <Icon type="md-chatbubbles" />
+                                <a href="#">
+                                    退出
+                                </a>
+                            </MenuItem>
+                        </MenuGroup>
+                    </Menu>
                 </div>
-                <div style="float: left">
-                <table class="table" border="0">
-                    <tr style="color:rgba(4,29,3,0.75);">
-                        <th>图片</th>
-                        <th>书籍名称</th>
-                        <th>ISBN</th>
-                        <th>借阅时间</th>
-                        <th>归还时间</th>
-                        <th>操作</th>
-                    </tr>
+                <div class="content1">
+                    <div class="b">
+                        <a class="a1">信用分记录 </a><a2 lass="a2">您最近一周的变化情况</a2>
+                    </div>
+                    <div style="float: left">
+                        <table class="table" border="0">
+                            <tr style="color:rgba(4,29,3,0.75);">
+                                <th>时间</th>
+                                <th>变化</th>
+                                <th>原因</th>
+                            </tr>
 
-                    <tr v-for="(item,index) in bookinfo" :info="item" :key="index">
-                        <td class="td1">
-                            <img :src="item.imgurl">
-                        </td>
+                            <tr v-for="(item,index) in creditinfo" :info="item" :key="index">
+                                <td class="td1">
+                                    {{item.time}}
+                                </td>
 
-                        <td class="td2" style="">
-                            {{item.name}}
-                        </td>
-                        <td class="td3">
-                            {{item.ISBN}}
-                        </td>
-                        <td class="td4">
-                            {{item.time1}}
-                        </td>
-                        <td class="td5">
-                            {{item.time2}}
-                        </td>
-                        <td class="td6">
-                            <Button>续借</Button>
-                        </td>
-                        <hr>
-                    </tr>
+                                <td class="td2" style="">
+                                    {{item.change}}
+                                </td>
+                                <td class="td3">
+                                    {{item.reason}}
+                                </td>
+                                <hr>
+                            </tr>
 
-                </table>
-            </div>
+                        </table>
+                    </div>
 
-            </div>
+                </div>
             </div>
         </div>
         <div class="footer">
@@ -156,36 +143,45 @@
         name: "state",
         data() {
             return {
-                bookinfo: [
+                creditinfo: [
                     {
-                        name: '海贼王',
-                        ISBN: '1',
-                        author: '尾田栄一郎',
-                        introduce: '太长了不想写',
-                        imgurl: 'https://lain.bgm.tv/pic/cover/c/92/97/975_YKuWd.jpg',
-                        time1: '2019-7-21',
-                        time2: '2019-7-21'
-                    },
-                    {
-                        name: '名侦探柯南',
-                        ISBN: '2',
-                        author: '青山剛昌',
-                        introduce: '太长了不想写',
-                        imgurl: 'https://lain.bgm.tv/pic/cover/c/01/88/899_Q3F3X.jpg',
-                        time1: '2016-5-2',
-                        time2: '2019-7-21'
+                        time: '2019-7-20',
+                        change:123,
+                        reason:123
+
 
                     },
                     {
-                        name: '来自新世界',
-                        ISBN: '3',
-                        author: '貴志祐介',
-                        introduce: '太长了不想写',
-                        imgurl: 'https://lain.bgm.tv/pic/cover/c/1e/7b/37782_OkkQ7.jpg',
-                        time1: '2019-1-1',
-                        time2: '2019-7-21'
+                        time: '2019-7-21',
+                        change:456,
+                        reason:456
+
+                    },
+                    {
+                        time: '2019-7-22',
+                        change:789,
+                        reason:789
+                    },
+                    {
+                        time: '2019-7-23',
+                        change:111,
+                        reason:111
+
+                    },
+                    {
+                        time: '2019-7-24',
+                        change:222,
+                        reason:222
+
+                    },
+                    {
+                        time: '2019-7-25',
+                        change:333,
+                        reason:333
+
                     },
                 ],
+
                 serachInfo: '',
             }
         },
@@ -203,9 +199,7 @@
 
                     })
             }
-        }
-
-
+    }
     }
 </script>
 
@@ -233,19 +227,22 @@
     .header a:hover {
         color: green;
     }
-
-    .content {
-
-        background: rgba(250, 250, 250, 0.75);
+    .header input,button{
+        border-radius: 0px;
     }
     .b{
         height: 49px;
         line-height: 49px;
-        font-size: 20px;
-
+        vertical-align:middle;
     }
-    .you{
+    .a1{
         margin-left: 20px;
+        font-size: 20px;
+    }
+
+    .b a2{
+        font-size: 15px;
+
     }
     .a{
 
@@ -268,16 +265,17 @@
     .table {
         text-align: center;
         border-collapse: collapse;
+        margin-left: 30px;
     }
 
     .table td {
-
+        border:1px solid lightsteelblue;
     }
 
     .table tr {
 
         margin-top: 10px;
-        border-bottom: 1px solid black;
+
 
     }
 
@@ -292,26 +290,20 @@
     }
 
     .td1 {
-        width: 130px
+        height: 60px;
+        width: 300px;
     }
 
     .td2 {
-        width: 185px
+        height: 60px;
+        width: 300px;
     }
 
     .td3 {
-        width: 153px
+        height: 60px;
+        width: 300px;
     }
 
-    .td4 {
-        width: 124px
-    }
-    .td5{
-          width: 130px;
-      }
-    .td6{
-        width: 130px;
-    }
     .footer{
         color: white;
         width: 100%;
@@ -359,4 +351,5 @@
         left: 10%;
 
     }
+
 </style>

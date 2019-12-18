@@ -8,10 +8,30 @@ export default new Vuex.Store({
       loginuser:'',
       cartlist:[],
       booklist:[],
-      personlist:[]
+      personlist:[],
+      NoticInfo:[],
+      bookserach:[],
+      SerachInfo:[],
+      address:'192.168.164.206'
+
 
   },
   mutations: {
+
+      setBookSerach(state,obj){
+          state.bookserach = [];
+          state.bookserach=obj;
+      },
+      setSerachInfo(state,obj){
+          state.SerachInfo = [];
+          state.SerachInfo=obj;
+      },
+
+      setNoticInfo(state,obj){
+          state.setNoticInfo = [];
+          state.setNoticInfo=obj;
+      },
+
       setLoginUser(state,obj){
         state.loginuser=obj;
       },

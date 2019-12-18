@@ -53,15 +53,15 @@
                     this.errmsg1='用户名不能为空';
                     valid=false;
                 }
-                else {
-                    axios.get('http://localhost:8080/api/isexist',{params:{username:this.username}})
-                        .then((res)=>{
-                            if (res.data){
-                                this.errmsg1='用户名已存在'
-                                valid=false;
-                            }
-                        })
-                }
+                // else {
+                //     axios.get('http://192.168.164.130:8090/DDbook/user/reg',{params:{username:this.username}})
+                //         .then((res)=>{
+                //             if (res.data){
+                //                 this.errmsg1='用户名已存在'
+                //                 valid=false;
+                //             }
+                //         })
+                // }
                 if (valid == true)
                     this.errmsg1= '';
                  return valid;
@@ -105,14 +105,16 @@
                     let validate3 = this.validatePass2();
                     return validate1&&validate2&&validate3;
                 },
+
             doRegister(){
                 if (this.validate()){
-                    axios.post('http://localhost:8080/api/register',
+                    axios.post('http://'+this.$store.state.address+':8090/DDbook/user/reg',
                         {username:this.username,password:this.password})
                         .then((res)=>{
                             if (res.data){
                                 alert("注册成功，将跳转到登录页面");
                                 this.$router.push('/login');
+                                console.log(res)
                             }
                         })
                 }
