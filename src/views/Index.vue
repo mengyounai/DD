@@ -78,18 +78,23 @@
             <div style="width: 65%">
                 <h3 style="margin:15px 0 0 180px">图书推荐</h3>
 
-                <ul class="ul1" style="margin:10px 0 0 180px">
-                    <li><img src="https://img.licilici.com/2019/12/02/5de4ff21dd333.jpg"></li>
-                    <li><img src="https://img.licilici.com/2019/12/02/5de4ff21dd333.jpg"></li>
-                    <li><img src="https://img.licilici.com/2019/12/02/5de4ff21dd333.jpg"></li>
-                    <li><img src="https://img.licilici.com/2019/12/02/5de4ff21dd333.jpg"></li>
-                    <li><img src="https://img.licilici.com/2019/12/02/5de4ff21dd333.jpg"></li>
+                <ul class="ul1"  style="margin:10px 0 0 180px">
+                    <li v-for="(item,index) in bookinfo2" :info="item" :key="index" :title="item.name">
+                        <router-link class="list1" :to="{name:'detail',params:{id:item.id}}">
+                        <img class="img2" :src="item.icon">
+                        </router-link>
+                    </li>
                 </ul>
             </div>
             <div style="width: 23%">
                 <h3 style="margin-top: 30px;margin-bottom: 2px">排行榜</h3>
                 <ul class="ul4" v-for="(item,index) in bookinfo.slice(0, 5) " :info="item" :key="index">
-                    <li><a>{{index+1}}.{{item.name}}</a></li>
+                    <li>
+                        <router-link class="list1" :to="{name:'detail',params:{id:item.id}}">
+                        <a>{{index+1}}.{{item.name}}
+                        </a>
+                        </router-link>
+                    </li>
                 </ul>
             </div>
 
@@ -156,6 +161,9 @@
                     {ISBN: '', name: '', click: ''}
 
                 ],
+                bookinfo2:[
+
+                ],
                 pinfo:[
 
                 ],
@@ -187,27 +195,6 @@
                 }
 
             },
-
-
-            // mounted(){
-            //     if (this.$store.state.loginuser == ''){
-            //         this.$router.push('/login');
-            //     }
-            //     else {
-            //         axios.post("http://localhost:8090/DDbook/book/index")
-            //             .then((res)=>{
-            //                 this.prodlist = res.data;
-            //                 this.$store.commit('setBookList',this.bookinfo);
-            //                 this.change(this.current);
-            //             })
-            //     }
-            //     if (this.$cookies.isKey('username')) {
-            //         let loginuser = this.$cookies.get('username')
-            //         this.$store.commit('setLoginUser',loginuser);
-            //         this.$router.push('/index');
-            //     }
-            //
-            // },
 
 
         },
@@ -245,6 +232,12 @@
                     this.bookinfo = res.data.data;
                     console.log(res.data.data);
 
+                })
+
+            axios.get('http://' + this.$store.state.address + ':8090/DDbook/book/Recommend')
+                .then((res) => {
+                    this.bookinfo2=res.data.data
+                    console.log(res.data.data);
                 })
 
         }
@@ -323,7 +316,7 @@
 
     .ul1 li {
 
-        margin-right: 50px;
+        margin-right: 40px;
         display: inline-block;
     }
 
@@ -481,6 +474,11 @@
 
         width: 50%;
         display: inline-block;
+    }
+
+    .img2{
+        width: 88px;
+        height: 110px;
     }
 
 

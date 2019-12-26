@@ -54,23 +54,21 @@
                         <MenuGroup title="用户管理">
                             <MenuItem name="5">
                                 <Icon type="md-document"/>
-                                <a href="#">修改密码</a>
+                                <a href="http://localhost:8080/reset">修改密码</a>
                             </MenuItem>
                             <MenuItem name="6">
                                 <Icon type="md-chatbubbles" />
-                                <a href="#">
-                                    退出
-                                </a>
+                                <a @click="logout()">退出</a>
                             </MenuItem>
                         </MenuGroup>
                     </Menu>
                 </div>
                 <div class="content1">
                     <div class="b">
-                        <a class="a1">信用分记录 </a><a2 lass="a2">您最近一周的变化情况</a2>
+                        <a class="a1">信用分记录 </a><span class="a2">您最近的变化情况</span>
                     </div>
                     <div>
-                        <table class="table" border="0" style="float: left">
+                        <table class="table" border="0">
                             <tr style="color:rgba(4,29,3,0.75);">
                                 <th>时间</th>
                                 <th>变化</th>
@@ -83,10 +81,10 @@
                                 </td>
 
                                 <td class="td2" style="">
-                                    {{item.change}}
+                                    {{item.reduce}}
                                 </td>
                                 <td class="td3">
-                                    {{item.reason}}
+                                    {{item.record}}
                                 </td>
                                 <hr>
                             </tr>
@@ -194,6 +192,7 @@
             }
         },
         mounted() {
+
             if (this.$cookieStore.getCookie('username')) {
                 var username=this.$cookieStore.getCookie('username')
                 axios.post('http://' + this.$store.state.address + ':8090/DDbook/user/index',{
@@ -201,11 +200,19 @@
                 }).then((res)=>{
                     this.pinfo=res.data.data
                     console.log(res)
+                    axios.post('http://' + this.$store.state.address + ':8090/DDbook/user/userCredit',{
+                        userId:this.pinfo.userid
+                    }).then((res)=>{
+                        this.creditinfo=res.data.data
+                        console.log(res)
+
+                    })
                 })
 
                 this.exist = true
             }
             else {
+                alert("请先登录")
                 this.exist = false
             }
             console.log(this.$cookieStore.getCookie('username'))
@@ -215,6 +222,14 @@
 
 
         methods: {
+            logout(){
+                var a=confirm("是否退出？")
+                if(a){
+                    this.$cookieStore.delCookie('username');
+                    this.$router.push("/login")
+                }
+
+            },
 
     }
     }

@@ -8,8 +8,11 @@
                     <a href="http://localhost:8080/index"><img src="../images/DD阅读.png"></a>
                 </Col>
                 <Col :lg="{ span: 5, offset: 4 }">
-                    <Input style="width: 200px" type="text" v-model="serachInfo"/><Button @click="dosearch" style="width: 50px;height: 30px" type="primary" icon="ios-search"></Button>
-                </Col>
+                    <Input style="width: 200px" type="text" v-model="serachInfo"/>
+                    <router-link :to="{name:'list2',params:{serachInfo:serachInfo}}">
+                        <Button style="width: 50px;height: 30px" type="primary"
+                                icon="ios-search"></Button>
+                    </router-link>                </Col>
                 <Col :xs="{ offset: 2 }">
                     <div v-show="exist">
                         <a class="a1" href="http://localhost:8080/personal"><img class="img10"
@@ -41,7 +44,7 @@
                         </MenuItem>
                         <MenuItem name="3">
                             <Icon type="md-document"/>
-                            <a href="#">信用分记录</a>
+                            <a href="http://localhost:8080/credit">信用分记录</a>
                         </MenuItem>
                     </MenuGroup>
                     <MenuGroup title="关注中心">
@@ -80,33 +83,40 @@
                         <th>操作</th>
                     </tr>
 
-                    <tr v-for="(item,index) in bookinfo" :info="item" :key="index">
+                    <tr v-for="(item,index) in showlist.slice(0, 3)" :info="item" :key="index">
                         <td class="td1">
-                            <img :src="item.imgurl">
+                            <router-link class="list1" :to="{name:'detail',params:{id:item.bookid}}">
+                            <img :src="item.bookicon">
+                            </router-link>
                         </td>
-
                         <td class="td2" style="">
-                            {{item.name}}
+                            {{item.bookname}}
                         </td>
                         <td class="td3">
                             {{item.ISBN}}
                         </td>
                         <td class="td4">
-                            {{item.time1}}
+                            {{item.borrowTime}}
                         </td>
                         <td class="td5">
-                            {{item.time2}}
+                            {{item.returnTime}}
                         </td>
                         <td class="td6">
-                            <Button>续借</Button>
+                            <Button @click="borrow(index)">续借</Button>
                         </td>
                         <hr>
                     </tr>
 
                 </table>
+                    <div class="page">
+                        <Page :total="total" :current="current" :page-size="size"
+                              prev-text="上一页" next-text="下一页" @on-change="change"/>
+                    </div>
             </div>
 
+
             </div>
+
             </div>
         </div>
         <div class="footer">
@@ -193,7 +203,16 @@
                 ],
                 serachInfo: '',
                 exist:'',
-                pinfo:[]
+                pinfo:[],
+                showlist: [],
+                current: 1,
+                size: 3,
+            }
+        },
+
+        computed: {
+            total() {
+                return this.bookinfo.length;
             }
         },
 
@@ -204,7 +223,17 @@
                     username:username
                 }).then((res)=>{
                     this.pinfo=res.data.data
-                    console.log(res)
+                    this.$store.commit('setId', this.pinfo.userid);
+                    axios.post('http://' + this.$store.state.address + ':8090/DDbook/user/userBorrow', {
+                        userId: this.$store.state.id,
+                    }).then((res) => {
+                        this.bookinfo=res.data.data
+                        this.showlist=res.data.data
+                        console.log(res.data.data)
+
+
+                    })
+
                 })
 
                 this.exist = true
@@ -218,20 +247,36 @@
         },
 
         methods: {
-            dosearch() {
-                axios.post('http://'+this.$store.state.address+':8090/DDbook/book/selBookByName', {bookName: this.serachInfo,})
-                    .then((res)=>{
 
-                        this.$store.commit('setSerachInfo',res.data.data);
-                        this.$router.push({
-                            name: 'list2',
+            change(val) {
+                this.current = val;
+                this.showlist = [];
+                for (var i = 0; i < this.size; i++) {
+                    var index = (this.current - 1) * this.size + i;
+                    if (index < this.bookinfo.length) {
+                        var prod = this.bookinfo[index];
+                        this.showlist.push(prod);
+                    }
+                    else
+                        break;
+                }
+            },
 
-                        })
-                        console.log(res.data.data);
+            borrow(index) {
 
+                var a = confirm("是否续借(默认30天)")
+                if (a) {
+                    axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/renewBook', {
+                        borrowId: this.showlist[index].borrowid,
+
+                    }).then((res) => {
+                        location.reload()
                     })
+                }
+
             }
         }
+
 
 
     }
@@ -394,5 +439,11 @@
         top:15%;
         left: 10%;
 
+    }
+
+    .page{
+        position: absolute;
+        left: 75%;
+        top:80%;
     }
 </style>
