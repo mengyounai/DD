@@ -11,10 +11,14 @@
                     <Input style="width: 200px" type="text" v-model="serachInfo"/><Button @click="dosearch" style="width: 50px;height: 30px" type="primary" icon="ios-search"></Button>
                 </Col>
                 <Col :xs="{ offset: 2 }">
-                    <a href="http://localhost:8080/personal"><img src="../images/头像.png"
-                                                                  style="width: 50px;height: 50px"></a>
-                    <!--<a href="http://localhost:8080/login"  >登录</a>/-->
-                    <!--<a href="http://localhost:8080/register"  >注册</a>-->
+                    <div v-show="exist">
+                        <a class="a1" href="http://localhost:8080/personal"><img class="img10"
+                                                                                 :src="pinfo.icon"></a>
+                    </div>
+                    <div v-show="!exist">
+                        <a href="http://localhost:8080/login">登录</a>/
+                        <a href="http://localhost:8080/register">注册</a>
+                    </div>
                 </Col>
             </Row>
         </div>
@@ -152,6 +156,7 @@
 </template>
 
 <script>
+    import axios from 'axios'
     export default {
         name: "state",
         data() {
@@ -187,8 +192,31 @@
                     },
                 ],
                 serachInfo: '',
+                exist:'',
+                pinfo:[]
             }
         },
+
+        mounted() {
+            if (this.$cookieStore.getCookie('username')) {
+                var username=this.$cookieStore.getCookie('username')
+                axios.post('http://' + this.$store.state.address + ':8090/DDbook/user/index',{
+                    username:username
+                }).then((res)=>{
+                    this.pinfo=res.data.data
+                    console.log(res)
+                })
+
+                this.exist = true
+            }
+            else {
+                this.exist = false
+            }
+            console.log(this.$cookieStore.getCookie('username'))
+
+
+        },
+
         methods: {
             dosearch() {
                 axios.post('http://'+this.$store.state.address+':8090/DDbook/book/selBookByName', {bookName: this.serachInfo,})
@@ -233,6 +261,14 @@
     .header a:hover {
         color: green;
     }
+    .img10 {
+        width: 54px;
+        height: 56px;
+        border-radius: 75px;
+        overflow: hidden;
+        /*background: rgba(232, 116, 41, 0.13);*/
+    }
+
 
     .content {
 

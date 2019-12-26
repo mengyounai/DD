@@ -12,7 +12,9 @@ export default new Vuex.Store({
       NoticInfo:[],
       bookserach:[],
       SerachInfo:[],
-      address:'192.168.164.206'
+      id:'',
+      address:'192.168.161.183',
+
 
 
   },
@@ -21,6 +23,9 @@ export default new Vuex.Store({
       setBookSerach(state,obj){
           state.bookserach = [];
           state.bookserach=obj;
+      },
+      setId(state,obj){
+          state.id=obj;
       },
       setSerachInfo(state,obj){
           state.SerachInfo = [];

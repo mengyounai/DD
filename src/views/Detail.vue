@@ -8,14 +8,20 @@
                 </Col>
                 <Col :lg="{ span: 5, offset: 4 }">
                     <Input style="width: 200px" type="text" v-model="serachInfo"/>
-                    <Button @click="dosearch" style="width: 50px;height: 30px" type="primary"
-                            icon="ios-search"></Button>
+                    <router-link :to="{name:'list2',params:{serachInfo:serachInfo}}">
+                        <Button style="width: 50px;height: 30px" type="primary"
+                                icon="ios-search"></Button>
+                    </router-link>
                 </Col>
                 <Col :xs="{ offset: 2 }">
-                    <a href="http://localhost:8080/personal"><img src="../images/头像.png"
-                                                                  style="width: 50px;height: 50px"></a>
-                    <!--<a href="http://localhost:8080/login"  >登录</a>/-->
-                    <!--<a href="http://localhost:8080/register"  >注册</a>-->
+                    <div v-show="exist">
+                        <a class="a1" href="http://localhost:8080/personal"><img class="img10"
+                                                                                 :src="pinfo.icon"></a>
+                    </div>
+                    <div v-show="!exist">
+                        <a href="http://localhost:8080/login">登录</a>/
+                        <a href="http://localhost:8080/register">注册</a>
+                    </div>
                 </Col>
             </Row>
         </div>
@@ -33,13 +39,17 @@
                         <p>出版时间:{{prod.time}}</p>
                         <p>
                             <Button>点击阅读</Button>
-                            <Button style="margin-left: 20px">借阅/已借阅</Button>
+                            <span @click="borrow()">
+<Button style="margin-left: 20px;background: rgba(180,185,193,0.92);" v-show="state==0">已借阅</Button>
+                                <Button style="margin-left: 20px;background: rgba(180,185,193,0.92);" v-show="state==1">库存不足</Button>
+<Button style="margin-left: 20px;" v-show="state==2">借阅</Button>
+
+                            </span>
                         </p>
                     </div>
                 </div>
 
             </div>
-
 
             <div class="content2">
                 <div class="content2-left">
@@ -131,23 +141,24 @@
 
                         </h3>
                         <div class="row2">
-                            <Input type="textarea" :rows="3"/>
-                            <Button>发表评论</Button>
+                            <Input type="textarea" v-model="text1" :rows="3"/>
+                            <Button @click="submit1()">发表评论</Button>
 
                         </div>
                         <hr style="margin-top: 10px">
                         <div class="row3">
-                            <ul class="ul2" v-for="(item,index) in personalinfo" :info="item" :key="index">
-                                <li>
-                                    <!--<img src="../images/头像2.jpg">-->
+                            <ul class="ul2">
+                                <li v-for="(item,index) in personalinfo" :info="item" :key="index"
+                                    v-show="item.pldj==0">
                                     <div class="list1">
-                                        <img class="img1" :src="item.imgurl">
+                                        <img class="img1" :src="item.usericon">
                                         <div class="caption">
-                                            <p class="p4">{{item.name}}</p>
-                                            <p class="p5">{{item.content}}</p>
+                                            <p class="p4">{{item.username}}</p>
+                                            <p class="p5">{{item.con}}</p>
                                             <p class="p6">
-                                                <a style="color: rgba(81,90,110,1)" @click="doClick(index)">
-                                                    <Icon type="md-thumbs-up" style="font-size: 20px"/>
+                                                <a style="color: rgba(81,90,110,1)" @click="doClick(index,item)">
+                                                    <Icon type="md-thumbs-up" style="font-size: 20px"
+                                                          :class="item.classStr1"/>
                                                 </a>
                                                 {{item.laud}}
                                                 <a style="color: rgba(81,90,110,1);margin-left: 5px">
@@ -156,59 +167,65 @@
                                                 <Button class="button1" type="primary" icon="ios-text"
                                                         @click="doClick2(index)">回复
                                                 </Button>
-                                                <span style="float: right;">{{item.time}}
-                                                <a style="margin:0 10px 0 20px;color: blue" @click="doClick3(index)">
-                                                    <Icon type="ios-arrow-down" v-show="item.show3"/><Icon
-                                                        type="ios-arrow-up" v-show="!item.show3"/></a>
+                                                <span style="float: right;">
+                                                    <span style="margin-right: 25px; color: #999">{{item.time}}</span>
+                                                <a v-show="item.show3" style="color: blue;position: relative;right: 5%"
+                                                   @click="doClick3(index)">
+                                                    <Icon type="ios-arrow-down" v-show="!item.show4"/><Icon
+                                                        type="ios-arrow-up" v-show="item.show4"/></a>
                                             </span>
 
                                             </p>
                                             <div class="p7">
                                                 <shrink-view v-model="item.show==false">
-                                                    <Input type="textarea" :rows="3"/>
-                                                    <Button class="button2">发表评论</Button>
+                                                    <Input type="textarea" v-model="text2" :rows="3"/>
+                                                    <Button class="button2" @click="submit2(index)">发表评论</Button>
                                                 </shrink-view>
                                             </div>
                                             <div class="p8">
                                                 <shrink-view v-model="item.show2==false">
-                                                    <ul class="ul2" v-for="(item,index) in personalinfo2" :info="item"
-                                                        :key="index">
+                                                    <ul class="ul2">
 
-                                                        <li>
-                                                            <div class="list1">
-                                                                <img class="img1" :src="item.imgurl">
+                                                        <li v-for="(item2,index2) in personalinfo2" :info="item2"
+
+                                                            :key="index2">
+
+                                                            <div class="list1"
+                                                                 v-show="item2.show2&&item2.plid==item.disid">
+                                                                <img class="img1" :src="item2.usericon">
                                                                 <div class="caption">
-                                                                    <p class="p4">{{item.name}}</p>
-                                                                    <p class="p5">{{item.content}}</p>
+                                                                    <p class="p4">{{item2.username}}</p>
+                                                                    <p class="p5">{{item2.con}}</p>
                                                                     <p class="p6">
                                                                         <a style="color: rgba(81,90,110,1)"
-                                                                           @click="doClick(index)">
+                                                                           @click="doClick4(index2)">
                                                                             <Icon type="md-thumbs-up"
                                                                                   style="font-size: 20px"/>
                                                                         </a>
-                                                                        {{item.sum3}}
+                                                                        {{item2.laud}}
                                                                         <a style="color: rgba(81,90,110,1);margin-left: 5px">
                                                                             <Icon type="md-thumbs-down"
                                                                                   style="font-size: 20px"/>
                                                                         </a>
                                                                         <Button class="button1" type="primary"
-                                                                                icon="ios-text">回复
+                                                                                icon="ios-text"
+                                                                                @click="doClick5(index2)">回复
                                                                         </Button>
-                                                                        <span style="float: right;">{{item.time}}<a
-                                                                                style="margin:0 10px 0 20px;color: blue"><Icon
-                                                                                type="ios-arrow-down"/></a></span>
-
+                                                                        <span style="float: right;">
+                                                                          <span style="margin-right: 25px; color: #999">{{item.time}}</span>                                                                                   <a
+                                                                        </span>
                                                                     </p>
                                                                     <div class="p7">
-                                                                        <shrink-view v-model="item.show==false">
+                                                                        <shrink-view v-model="item2.show==false">
                                                                             <Input type="textarea" :rows="3"/>
                                                                             <Button class="button2">发表评论</Button>
                                                                         </shrink-view>
                                                                     </div>
+
                                                                 </div>
                                                             </div>
-                                                        </li>
 
+                                                        </li>
                                                     </ul>
                                                 </shrink-view>
                                             </div>
@@ -278,7 +295,7 @@
     import ShrinkView from '../views/aaa';
 
     export default {
-        props: ['m'],
+        props: [''],
         components: {
             ShrinkView
         },
@@ -297,16 +314,18 @@
                 personalinfo: [
                     {
                         id: '',
-                        plid:'',
+                        plid: '',
                         name: '',
                         sum3: "",
-                        level :'',
+                        level: '',
                         imgurl: '',
                         content: '',
                         time: '',
                         show: 'false',
                         show2: 'false',
-                        show3: 'false'
+                        show3: 'false',
+                        show4: 'false',
+                        classStr1: ''
                     },
 
                     // {
@@ -367,36 +386,53 @@
                     // },
 
                 ],
+                // personalinfo2: [
+                //     {
+                //         id: '0',
+                //         name: '维多利加',
+                //         sum3: "2",
+                //         imgurl: 'https://www.liuli.se/wp/wp-content/uploads/wpdiscuz/cache/gravatars/491e70bc8c27a17ec9bd2035ca5f5ea7.gif',
+                //         content: '这就是史上第一吗',
+                //         time: '2019年07月21日 上午12:55',
+                //         show: 'false'
+                //     },
+                //     {
+                //         id: '1',
+                //         name: '无限缤纷',
+                //         sum3: '1',
+                //         imgurl: 'https://www.liuli.se/wp/wp-content/uploads/wpforo/avatars/1178069256qq-com_87009.jpg',
+                //         content: '马马虎虎',
+                //         time: '2019年02月3日 上午2:30',
+                //         show: 'false'
+                //     },
+                //     {
+                //         id: '2',
+                //         name: '中二的鲁路修',
+                //         sum3: '1',
+                //         imgurl: 'https://www.liuli.se/wp/wp-content/uploads/wpdiscuz/cache/gravatars/c00ceff6317e36a8ab2e71cc6c86cdbe.gif',
+                //         content: '超好看',
+                //         time: '2019年02月21日 下午18:20',
+                //         show: 'false'
+                //     },
+                //
+                // ],
                 personalinfo2: [
                     {
-                        id: '0',
-                        name: '维多利加',
-                        sum3: "2",
-                        imgurl: 'https://www.liuli.se/wp/wp-content/uploads/wpdiscuz/cache/gravatars/491e70bc8c27a17ec9bd2035ca5f5ea7.gif',
-                        content: '这就是史上第一吗',
-                        time: '2019年07月21日 上午12:55',
-                        show: 'false'
+                        id: '',
+                        plid: '',
+                        name: '',
+                        sum3: "",
+                        level: '',
+                        imgurl: '',
+                        content: '',
+                        time: '',
+                        show: 'false',
+                        show2: 'false',
+                        show3: 'false',
+                        show4: 'false'
                     },
-                    {
-                        id: '1',
-                        name: '无限缤纷',
-                        sum3: '1',
-                        imgurl: 'https://www.liuli.se/wp/wp-content/uploads/wpforo/avatars/1178069256qq-com_87009.jpg',
-                        content: '马马虎虎',
-                        time: '2019年02月3日 上午2:30',
-                        show: 'false'
-                    },
-                    {
-                        id: '2',
-                        name: '中二的鲁路修',
-                        sum3: '1',
-                        imgurl: 'https://www.liuli.se/wp/wp-content/uploads/wpdiscuz/cache/gravatars/c00ceff6317e36a8ab2e71cc6c86cdbe.gif',
-                        content: '超好看',
-                        time: '2019年02月21日 下午18:20',
-                        show: 'false'
-                    },
-
                 ],
+
                 grade2: 5,
                 valueCustomText: 0,
                 count: '',
@@ -413,62 +449,184 @@
                 showlist: [],
                 prod: [],
                 serachInfo: '',
-
+                text1: '',
+                text2: '',
+                text3: '',
+                state: '2',
+                boolean: true,
+                classStr1: '',
+                exist:'',
+                pinfo:[]
 
 
             }
         },
-        created: function () {
+        mounted() {
 
 
-            var id = this.$route.params.id
-
-            if (id==null){
-                id=this.prod.id
-            }
-
-
-            axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/selBookById', {bookId: id})
-                .then((res) => {
-                    this.prod = res.data.data;
-                    this.count1 = res.data.data.number.count1
-                    this.count2 = res.data.data.number.count2
-                    this.count3 = res.data.data.number.count3
-                    this.count4 = res.data.data.number.count4
-                    this.count5 = res.data.data.number.count5
-                    this.grade2 = Math.round(this.prod.score)
-
-                    this.sum = this.count1 + this.count2 + this.count3 + this.count4 + this.count5
-
-                    // this.personalinfo=res.data.data.discussList
-                    // this.personalinfo.content=res.data.data.discussList.con
-                    // this.personalinfo.id=res.data.data.discussList.disid
-                    // this.personalinfo.plid=res.data.data.discussList.plid
-                    // this.personalinfo.level=res.data.data.discussList.dj
-                    // this.personalinfo.sum3=res.data.data.discussList.laud
-                    // this.personalinfo.time=res.data.data.discussList.time
-                    // this.personalinfo.imgurl=res.data.data.discussList.usericon
-
-                    console.log(res.data.data)
-
-                })
 
         },
+
 
         methods: {
-            doClick(index) {
-                this.personalinfo[index].laud++
-                console.log(this.personalinfo[index].sum3)
 
+            init() {
+                var id = this.$route.params.id
+
+                if (id == null) {
+                    id = this.prod.id
+                }
+
+                if (this.$cookieStore.getCookie('username')) {
+                    var username=this.$cookieStore.getCookie('username')
+                    axios.post('http://' + this.$store.state.address + ':8090/DDbook/user/index',{
+                        username:username
+                    }).then((res)=>{
+                        this.pinfo=res.data.data
+                        this.$store.commit('setId', this.pinfo.userid);
+                        axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/selBookById', {
+                            bookId: id,
+                            userId: this.$store.state.id
+                        })
+                            .then((res) => {
+                                this.prod = res.data.data;
+                                this.count1 = res.data.data.number.count1
+                                this.count2 = res.data.data.number.count2
+                                this.count3 = res.data.data.number.count3
+                                this.count4 = res.data.data.number.count4
+                                this.count5 = res.data.data.number.count5
+                                this.grade2 = Math.round(this.prod.score)
+
+
+
+                                this.sum = this.count1 + this.count2 + this.count3 + this.count4 + this.count5
+
+                                // this.personalinfo=res.data.data.discussList
+
+                                if (this.prod.number.b == false) {
+                                    this.state = 0
+                                } else if (this.prod.number.stock == 0) {
+                                    this.state = 1
+                                } else {
+                                    this.state = 2
+                                }
+                                console.log(this.prod.number.b)
+                                console.log(this.state)
+
+                                var a = []
+                                a = res.data.data.discussList
+
+                                for (var i = 0; i < a.length; i++) {
+                                    if (a[i].pldj == 0) {
+                                        this.personalinfo.push(a[i])
+                                    }
+                                }
+                                for (var i = 0; i < a.length; i++) {
+                                    if (a[i].pldj == 1) {
+                                        this.personalinfo2.push(a[i])
+                                    }
+                                }
+
+
+                                for (var i = 0; i < this.personalinfo.length; i++) {
+                                    for (var j = 0; j < this.personalinfo2.length; j++) {
+                                        if (this.personalinfo2[j].plid == this.personalinfo[i].disid) {
+                                            this.personalinfo[i].show3 = true
+                                        }
+                                    }
+                                }
+                                for (var i = 0; i < this.personalinfo.length; i++) {
+                                    if (this.personalinfo[i].state) {
+                                        this.personalinfo[i].classStr1 = ''
+
+
+                                    } else {
+                                        this.personalinfo[i].classStr1 = 'blue'
+
+                                    }
+                                }
+
+                                console.log(this.prod)
+                                console.log(this.personalinfo)
+                                console.log(this.personalinfo2)
+
+                            })
+                    })
+
+                    this.exist = true
+                }
+                else {
+                    this.exist = false
+                }
+                console.log(this.$cookieStore.getCookie('username'))
+                console.log(this.pinfo)
+
+            },
+
+
+            doClick(index, item) {
+
+                if (this.personalinfo[index].state) {
+                    this.personalinfo[index].state=!this.personalinfo[index].state
+                    this.personalinfo[index].classStr1 = 'blue'
+                    this.boolean = false
+                } else {
+                    this.personalinfo[index].state=!this.personalinfo[index].state
+                    this.personalinfo[index].classStr1 = ''
+                    this.boolean = true
+
+                }
+
+
+                axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/userLaud', {
+                    userId: this.$store.state.id,
+                    discussId: this.personalinfo[index].disid,
+                }).then((res) => {
+
+
+                })
+                var laud=this.personalinfo[index].laud
+                if (this.personalinfo[index].state) {
+
+                    laud--
+                }else {
+
+                    laud++
+                }
+
+                        this.$set(this.personalinfo[index], "laud",laud)
+
+
+
+                console.log(this.personalinfo[index].laud)
+                console.log(this.boolean)
             },
             doClick2(index) {
                 this.personalinfo[index].show = !this.personalinfo[index].show
                 console.log(this.personalinfo[index].show)
             },
             doClick3(index) {
+
                 this.personalinfo[index].show2 = !this.personalinfo[index].show2
-                this.personalinfo[index].show3 = !this.personalinfo[index].show3
+                this.personalinfo[index].show4 = !this.personalinfo[index].show4
                 console.log(this.personalinfo[index].show2)
+            },
+            doClick4(index2) {
+                this.personalinfo2[index2].laud++
+                console.log(this.personalinfo2[index2].laud)
+
+            },
+            doClick5(index2) {
+                this.personalinfo2[index2].show = !this.personalinfo2[index2].show
+                console.log(this.personalinfo2[index2].show)
+            },
+            doClick6(index2) {
+                this.personalinfo2[index2].show4 = !this.personalinfo2[index2].show4
+                console.log('disid:' + this.personalinfo2[index2].disid)
+                console.log('plid:' + this.personalinfo2[index2].plid)
+                console.log('pldj:' + this.personalinfo2[index2].pldj)
+                console.log('show4:' + this.personalinfo2[index2].show4)
+                console.log('index:' + index2)
             },
             getProdById(id) {
                 var prod = this.$store.state.booklist.find((item) => {
@@ -478,31 +636,104 @@
             },
             grade() {
                 axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/gradeBook', {
-                    userId: 5,
+                    userId: this.$store.state.id,
                     bookISBN: this.prod.ISBN,
                     grade: this.valueCustomText
                 })
                     .then((res) => {
+                        var id = this.$route.params.id
+
+                        if (id == null) {
+                            id = this.prod.id
+                        }
 
 
+                        axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/selBookById', {
+                            bookId: id,
+                            userId: this.$store.state.id
+                        })
+                            .then((res) => {
+                                this.prod = res.data.data;
+                                this.count1 = res.data.data.number.count1
+                                this.count2 = res.data.data.number.count2
+                                this.count3 = res.data.data.number.count3
+                                this.count4 = res.data.data.number.count4
+                                this.count5 = res.data.data.number.count5
+                                this.grade2 = Math.round(this.prod.score)
+
+
+                                this.sum = this.count1 + this.count2 + this.count3 + this.count4 + this.count5
+
+                            })
                     })
+
+
                 console.log(1)
 
             },
-            dosearch() {
-                axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/selBookByName', {bookName: this.serachInfo,})
+            submit1() {
+                if (this.text1=='') {
+                    alert("评论不能为空")
+                }
+
+                else {
+                    axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/userDiscuss', {
+                        userId: this.$store.state.id,
+                        bookISBN: this.prod.ISBN,
+                        discussid: '',
+                        plcon: this.text1
+                    }).then((res) => {
+                        if (res){
+                            alert("发送成功")
+                            this.text1 = ''
+                            location. reload()
+
+                        } else {
+                            alert("发送失败")
+                        }
+
+                                })
+
+
+
+                }
+            },
+            submit2(index) {
+                axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/userDiscuss', {
+                    userId: this.$store.state.id,
+                    bookISBN: this.prod.ISBN,
+                    discussid: this.personalinfo[index].disid,
+                    plcon: this.text2
+                })
                     .then((res) => {
+                        if (res.data.code == 0) {
+                            alert("发送信息成功！")
+                            location. reload()
+                        } else {
+                            alert("错误！")
+                        }
+                        console.log(res)
 
-                        this.$store.commit('setSerachInfo', res.data.data);
-                        this.$router.push({
-                            name: 'list2',
-
-                        })
-                        console.log(res.data.data);
 
                     })
-            }
 
+            },
+            borrow() {
+
+                if (this.state == 2) {
+                    var r = confirm("是否借阅")
+                    if (r) {
+                        axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/borrowBook', {
+                            userId: this.pinfo.userid,
+                            bookId: this.prod.id
+                        })
+                        this.state = 0
+                    }
+                }
+
+                console.log(this.state)
+
+            },
         },
         computed: {
             a() {
@@ -551,18 +782,36 @@
                 }
             },
             f() {
-                var sum = this.personalinfo.length + this.personalinfo2.length
+                var sum = this.personalinfo.length
                 return sum;
-            }
-            // total(){
-            //     return this.personalinfo.length;
-            // },
-            // mounted(){
-            //     this.$store.commit('setpersonList',this.personalinfo);
-            //     this.change(this.current);
-            // },
-        },
+            },
+            // laud(index){
+            //     console.log(this.personalinfo[index].laud)
+            //     var laud=this.personalinfo[index].laud
+            //
+            //     return laud;
+            // }
+            length() {
+                var length = this.prod.length
+                if (length == this.personalinfo.length + this.personalinfo2.length) {
 
+                } else {
+                    length == this.personalinfo.length + this.personalinfo2.length
+                }
+                return length
+            }
+
+        },
+        watch: {
+            qq() {
+
+
+            }
+        },
+        created: function () {
+            this.init()
+
+        },
     }
 </script>
 
@@ -593,6 +842,13 @@
 
     .header input, button {
         border-radius: 0px;
+    }
+    .img10 {
+        width: 54px;
+        height: 56px;
+        border-radius: 75px;
+        overflow: hidden;
+        /*background: rgba(232, 116, 41, 0.13);*/
     }
 
     .content {
@@ -639,9 +895,10 @@
     .content1-right button {
         color: white;
         height: 40px;
-        font-size: 25px;
+        font-size: 20px;
+        width: 120px;
         border-radius: 75px;
-        background: rgba(245, 165, 35, 1);
+        background: rgba(255, 153, 0, 1);
     }
 
     .content1-right p {
@@ -775,8 +1032,7 @@
 
     .content3 {
         display: flex;
-        min-height: 1100px;
-        height: auto;
+
         background: rgba(15, 15, 15, 0.75);
 
     }
@@ -852,6 +1108,7 @@
 
     .ul2 li {
         list-style: none;
+        margin-top: 15px;
     }
 
     .caption {
@@ -969,6 +1226,14 @@
         top: 15%;
         left: 10%;
 
+    }
+
+    .blue {
+        color: blue;
+    }
+
+    .red {
+        color: red
     }
 
 

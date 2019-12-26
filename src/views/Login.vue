@@ -17,7 +17,7 @@
 
         <div class="content">
 
-            <div style="width: 50%;margin-top: 40px;padding: 40px; border-right: 1px solid #cccccc">
+            <div style="width: 50%;margin-top: 40px;padding: 40px; border-right: 1px solid #cccccc;text-align: center">
                 <img src="../images/二维码.png" style="width: 200px">
                 <p>扫二维码关注公众号</p>
 
@@ -29,7 +29,7 @@
                         <Input prefix="ios-book" v-model="username" class="input" placeholder="你的用户名"
                                @on-blur="validateUser()"/>
                     </p>
-                    <div style="width:100%;height:5px;color: #FFC0CB ">{{errmsg1}}</div>
+                    <div style="width:100%;height:5px;color: #FFC0CB; ">{{errmsg1}}</div>
                     <p>
                         <Input prefix="ios-book" v-model="password" type="password" placeholder="请输入密码" class="input"/>
                     </p>
@@ -48,14 +48,13 @@
             </div>
         </div>
         <div style="margin: 0 auto; margin-top: 50px;">
-            <p>登录即代表你同意<a>用户协议</a>和<a>隐私政策</a></p>
+            <p style="text-align: center">登录即代表你同意<a>用户协议</a>和<a>隐私政策</a></p>
         </div>
     </div>
 </template>
 
 <script>
     import axios from 'axios'
-
     export default {
         name: "Login",
         data() {
@@ -88,12 +87,12 @@
                 })
                     .then((res) => {
                         if (res.data) {
-                            if (this.save) {
-                                this.$cookies.set('username', this.username, '7d');
-                            }
+
+                            this.$cookieStore.setCookie( 'username' ,this.username,86400);
                             this.$store.commit('setLoginUser', this.username);
                             this.$router.push('/index');
-                            console.log(res)
+
+
                         }
 
                         else {
@@ -114,7 +113,7 @@
 <style scoped>
     * {
         /*border: 1px solid black;*/
-        text-align: center;
+        /*text-align: center;*/
     }
 
     video {

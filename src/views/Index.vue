@@ -7,13 +7,21 @@
                     <a href="http://localhost:8080/index"><img src="../images/DD阅读.png"></a>
                 </Col>
                 <Col :lg="{ span: 5, offset: 4 }">
-                    <Input style="width: 200px" type="text" v-model="serachInfo"/><Button @click="dosearch" style="width: 50px;height: 30px" type="primary" icon="ios-search"></Button>
+                    <Input style="width: 200px" type="text" v-model="serachInfo"/>
+                    <router-link :to="{name:'list2',params:{serachInfo:serachInfo}}">
+                        <Button style="width: 50px;height: 30px" type="primary"
+                                icon="ios-search"></Button>
+                    </router-link>
                 </Col>
                 <Col :xs="{ offset: 2 }">
-                    <a class="a1" href="http://localhost:8080/personal"><img class="img1" src="../images/der.png"></a>
-                    <!--<a href="http://localhost:8080/login"  >登录</a>/-->
-                    <!--<a href="http://localhost:8080/register"  >注册</a>-->
-
+                    <div v-show="exist">
+                        <a class="a1" href="http://localhost:8080/personal"><img class="img1"
+                                                                                 :src="pinfo.icon"></a>
+                    </div>
+                    <div v-show="!exist">
+                        <a href="http://localhost:8080/login">登录</a>/
+                        <a href="http://localhost:8080/register">注册</a>
+                    </div>
                 </Col>
             </Row>
 
@@ -55,8 +63,9 @@
                         <div id="line1"><br><br><br><br><br><br><br>
                             <div id="line2">
                                 <h3 style="text-align: center;">公告</h3>
-                                <ul class="ul3" v-for="(item,index) in NoticInfo.slice(0, 3) " :info="item" :key="index">
-                                    <span><li>{{item.noticecon}}</li></span>
+                                <ul class="ul3" v-for="(item,index) in NoticInfo.slice(0, 3) " :info="item"
+                                    :key="index">
+                                    <span><li>{{index+1}}:{{item.noticecon}}</li></span>
 
                                 </ul>
                             </div>
@@ -123,7 +132,6 @@
 
                 <div class="row2">
                     <img src="../images/DD阅读2.png">
-                    <Button @click="doclick">点击</Button>
                 </div>
             </div>
 
@@ -135,19 +143,22 @@
 
 <script>
     import axios from 'axios'
+
     export default {
         name: "Index",
         data() {
             return {
                 NoticInfo: [
-                    {noticeid:'',noticetitle:'',noticecon:'',noticeimg:''},
+                    {noticeid: '', noticetitle: '', noticecon: '', noticeimg: ''},
 
                 ],
-                bookinfo:[
-                    {ISBN:'',name:'',click:''}
+                bookinfo: [
+                    {ISBN: '', name: '', click: ''}
 
                 ],
+                pinfo:[
 
+                ],
 
                 value3: 0,
                 setting: {
@@ -159,33 +170,23 @@
                     arrow: 'hover',
                 },
                 serachInfo: '',
-                bookserach:[]
+                bookserach: [],
+                loginuser: '',
+                exist: false
             }
 
         },
 
         methods: {
-            doclick() {
-                console.log(this.bookinfo)
+
+            logout(){
+                var a=confirm("是否退出？")
+                if(a){
+                    this.$cookieStore.delCookie('username');
+                    this.$router.push("/login")
+                }
+
             },
-
-
-
-
-            dosearch() {
-                axios.post('http://'+this.$store.state.address+':8090/DDbook/book/selBookByName', {bookName: this.serachInfo,})
-                    .then((res)=>{
-
-                        this.$store.commit('setSerachInfo',res.data.data);
-                        this.$router.push({
-                            name: 'list2',
-
-                        })
-                        console.log(res.data.data);
-
-                    })
-                    }
-
 
 
             // mounted(){
@@ -208,28 +209,40 @@
             //
             // },
 
-            },
-        created:function(){
-            axios.get('http://'+this.$store.state.address+':8090/DDbook/notice/index')
-                .then((res)=>{
+
+        },
+        mounted() {
+            if (this.$cookieStore.getCookie('username')) {
+                var username=this.$cookieStore.getCookie('username')
+                axios.post('http://' + this.$store.state.address + ':8090/DDbook/user/index',{
+                    username:username
+                }).then((res)=>{
+                    this.pinfo=res.data.data
+                    console.log(res)
+                    console.log(this.pinfo.userid)
+                })
+
+                this.exist = true
+            }
+            else {
+                this.exist = false
+            }
+            console.log(this.$cookieStore.getCookie('username'))
+
+
+        },
+        created: function () {
+
+            axios.get('http://' + this.$store.state.address + ':8090/DDbook/notice/index')
+                .then((res) => {
                     this.NoticInfo = res.data.data;
-                    this.$store.commit('setNoticInfo',this.NoticInfo);
+                    this.$store.commit('setNoticInfo', this.NoticInfo);
                     console.log(res.data.data)
                 })
 
-            axios.get('http://'+this.$store.state.address+':8090/DDbook/book/index')
-                .then((res)=>{
+            axios.get('http://' + this.$store.state.address + ':8090/DDbook/book/index')
+                .then((res) => {
                     this.bookinfo = res.data.data;
-                    // this.$store.commit('setbookinfo',this.bookinfo);
-                    // for (var i = 0; i < ch1.length-1; i++) {
-                    //     for (var j = 0; j < ch1.length - i - 1; j++) {
-                    //         if (ch1[j][0] < ch1[j + 1][0]) {
-                    //             var d = ch1[j];
-                    //             ch1[j] = ch1[j + 1];
-                    //             ch1[j + 1] = d;
-                    //         }
-                    //     }
-                    // }
                     console.log(res.data.data);
 
                 })
@@ -267,10 +280,10 @@
     .header a:hover {
         color: green;
     }
-    .header input,button{
+
+    .header input, button {
         border-radius: 0px;
     }
-
 
     .img1 {
         width: 54px;

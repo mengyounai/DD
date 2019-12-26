@@ -7,13 +7,20 @@
                     <a href="http://localhost:8080/index"><img src="../images/DD阅读.png"></a>
                 </Col>
                 <Col :lg="{ span: 5, offset: 4 }">
-                    <Input style="width: 200px" type="text" v-model="serachInfo"/><Button @click="dosearch" style="width: 50px;height: 30px" type="primary" icon="ios-search"></Button>
-                </Col>
+                    <Input style="width: 200px" type="text" v-model="serachInfo"/>
+                    <router-link :to="{name:'list2',params:{serachInfo:serachInfo}}">
+                        <Button style="width: 50px;height: 30px" type="primary"
+                                icon="ios-search"></Button>
+                    </router-link>                </Col>
                 <Col :xs="{ offset: 2 }">
-                    <a href="http://localhost:8080/personal"><img src="../images/头像.png"
-                                                                  style="width: 50px;height: 50px"></a>
-                    <!--<a href="http://localhost:8080/login"  >登录</a>/-->
-                    <!--<a href="http://localhost:8080/register"  >注册</a>-->
+                    <div v-show="exist">
+                        <a class="a1" href="http://localhost:8080/personal"><img class="img10"
+                                                                                 :src="pinfo.icon"></a>
+                    </div>
+                    <div v-show="!exist">
+                        <a href="http://localhost:8080/login">登录</a>/
+                        <a href="http://localhost:8080/register">注册</a>
+                    </div>
                 </Col>
             </Row>
         </div>
@@ -141,6 +148,8 @@
                 showlist: [],
                 showlist2: [{name:'',type:''}],
                 serachInfo: '',
+                pinfo:[],
+                exist:''
 
             }
         },
@@ -167,6 +176,22 @@
         mounted() {
             this.$store.commit('setBookList', this.bookinfo);
             this.change(this.current);
+
+            if (this.$cookieStore.getCookie('username')) {
+                var username=this.$cookieStore.getCookie('username')
+                axios.post('http://' + this.$store.state.address + ':8090/DDbook/user/index',{
+                    username:username
+                }).then((res)=>{
+                    this.pinfo=res.data.data
+                    console.log(res)
+                })
+
+                this.exist = true
+            }
+            else {
+                this.exist = false
+            }
+            console.log(this.$cookieStore.getCookie('username'))
         },
 
         methods: {
@@ -197,35 +222,12 @@
                     })
                 // console.log(item);
             },
-            dosearch() {
-                axios.post('http://'+this.$store.state.address+':8090/DDbook/book/selBookByName', {bookName: this.serachInfo,})
-                    .then((res)=>{
-
-                        this.$store.commit('setSerachInfo',res.data.data);
-                        this.$router.push({
-                            name: 'list2',
-
-                        })
-                        console.log(res.data.data);
-
-                    })
-            }
 
         },
         created:function(){
             axios.get('http://'+this.$store.state.address+':8090/DDbook/book/index')
                 .then((res)=>{
                     this.bookinfo = res.data.data;
-                    // this.$store.commit('setbookinfo',this.bookinfo);
-                    // for (var i = 0; i < ch1.length-1; i++) {
-                    //     for (var j = 0; j < ch1.length - i - 1; j++) {
-                    //         if (ch1[j][0] < ch1[j + 1][0]) {
-                    //             var d = ch1[j];
-                    //             ch1[j] = ch1[j + 1];
-                    //             ch1[j + 1] = d;
-                    //         }
-                    //     }
-                    // }
                     this.showlist=res.data.data;
                     console.log(res.data.data);
 
@@ -270,6 +272,14 @@
 
     .header a:hover {
         color: green;
+
+    }
+    .img10 {
+        width: 54px;
+        height: 56px;
+        border-radius: 75px;
+        overflow: hidden;
+        /*background: rgba(232, 116, 41, 0.13);*/
     }
 
     .header2 {

@@ -7,13 +7,18 @@
                     <a href="http://localhost:8080/index"><img src="../images/DD阅读.png"></a>
                 </Col>
                 <Col :lg="{ span: 5, offset: 4 }">
-                    <Input style="width: 200px" type="text" v-model="serachInfo"/><Button @click="dosearch" style="width: 50px;height: 30px" type="primary" icon="ios-search"></Button>
-                </Col>
+                    <Input style="width: 200px" type="text" v-model="serachInfo"/>
+                    <router-link  :to="{name:'list2',params:{serachInfo:serachInfo}}"><Button  style="width: 50px;height: 30px" type="primary" icon="ios-search"></Button>
+                    </router-link>                </Col>
                 <Col :xs="{ offset: 2 }">
-                    <a href="http://localhost:8080/personal"><img src="../images/头像.png"
-                                                                  style="width: 50px;height: 50px"></a>
-                    <!--<a href="http://localhost:8080/login"  >登录</a>/-->
-                    <!--<a href="http://localhost:8080/register"  >注册</a>-->
+                    <div v-show="exist">
+                        <a class="a1" href="http://localhost:8080/personal"><img class="img1"
+                                                                                 :src="pinfo.icon"></a>
+                    </div>
+                    <div v-show="!exist">
+                        <a href="http://localhost:8080/login">登录</a>/
+                        <a href="http://localhost:8080/register">注册</a>
+                    </div>
                 </Col>
             </Row>
         </div>
@@ -64,8 +69,8 @@
                     <div class="b">
                         <a class="a1">信用分记录 </a><a2 lass="a2">您最近一周的变化情况</a2>
                     </div>
-                    <div style="float: left">
-                        <table class="table" border="0">
+                    <div>
+                        <table class="table" border="0" style="float: left">
                             <tr style="color:rgba(4,29,3,0.75);">
                                 <th>时间</th>
                                 <th>变化</th>
@@ -139,8 +144,9 @@
 </template>
 
 <script>
+    import axios from 'axios'
     export default {
-        name: "state",
+        name: "credit",
         data() {
             return {
                 creditinfo: [
@@ -183,22 +189,33 @@
                 ],
 
                 serachInfo: '',
+                pinfo:[],
+                exist:''
             }
         },
-        methods: {
-            dosearch() {
-                axios.post('http://'+this.$store.state.address+':8090/DDbook/book/selBookByName', {bookName: this.serachInfo,})
-                    .then((res)=>{
+        mounted() {
+            if (this.$cookieStore.getCookie('username')) {
+                var username=this.$cookieStore.getCookie('username')
+                axios.post('http://' + this.$store.state.address + ':8090/DDbook/user/index',{
+                    username:username
+                }).then((res)=>{
+                    this.pinfo=res.data.data
+                    console.log(res)
+                })
 
-                        this.$store.commit('setSerachInfo',res.data.data);
-                        this.$router.push({
-                            name: 'list2',
-
-                        })
-                        console.log(res.data.data);
-
-                    })
+                this.exist = true
             }
+            else {
+                this.exist = false
+            }
+            console.log(this.$cookieStore.getCookie('username'))
+
+
+        },
+
+
+        methods: {
+
     }
     }
 </script>
@@ -230,6 +247,15 @@
     .header input,button{
         border-radius: 0px;
     }
+
+    .img1 {
+        width: 54px;
+        height: 56px;
+        border-radius: 75px;
+        overflow: hidden;
+        /*background: rgba(232, 116, 41, 0.13);*/
+    }
+
     .b{
         height: 49px;
         line-height: 49px;

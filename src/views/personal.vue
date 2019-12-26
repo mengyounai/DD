@@ -7,13 +7,19 @@
                     <a href="http://localhost:8080/index"><img src="../images/DD阅读.png"></a>
                 </Col>
                 <Col :lg="{ span: 5, offset: 4 }">
-                    <Input style="width: 200px" type="text" v-model="serachInfo"/><Button @click="dosearch" style="width: 50px;height: 30px" type="primary" icon="ios-search"></Button>
-                </Col>
+                    <Input style="width: 200px" type="text" v-model="serachInfo"/>
+                    <router-link  :to="{name:'list2',params:{serachInfo:serachInfo}}"><Button  style="width: 50px;height: 30px" type="primary"
+                                                                                               icon="ios-search"></Button>
+                    </router-link>                </Col>
                 <Col :xs="{ offset: 2 }">
-                    <a href="http://localhost:8080/personal"><img src="../images/头像.png"
-                                                                  style="width: 50px;height: 50px"></a>
-                    <!--<a href="http://localhost:8080/login"  >登录</a>/-->
-                    <!--<a href="http://localhost:8080/register"  >注册</a>-->
+                    <div v-show="exist">
+                        <a class="a1" href="http://localhost:8080/personal"><img class="img10"
+                                                                                 :src="pinfo.icon"></a>
+                    </div>
+                    <div v-show="!exist">
+                        <a href="http://localhost:8080/login">登录</a>/
+                        <a href="http://localhost:8080/register">注册</a>
+                    </div>
                 </Col>
             </Row>
         </div>
@@ -33,19 +39,25 @@
 
                     <div class="info-left">
                         <div class="info-left2">
-                            <img src="../images/头像3.png">
+                            <img :src="formItem.icon">
                         </div>
-                        <button class="button1">更换头像</button>
+                        <router-link class="list1" :to="{name:'imgupload'}">
+                            <button disabled class="button1">更换头像</button>
+                        </router-link>
                     </div>
 
                     <div class="info-right">
                             <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="70">
                             <FormItem label="用户Id" prop="id">
-                                <span v-model="formItem.id">{{formItem.id}}</span>
+                                <span v-model="formItem.userid">{{formItem.userid}}</span>
                             </FormItem>
                             <FormItem label="信用分" prop="grade">
-                                <span style="color: rgba(222,126,24,1)" v-model="formItem.grade">{{formItem.grade}}</span>
-                               <span> <Button class="button2">信用分记录</Button></span>
+                                <span style="color: rgba(222,126,24,1)" v-model="formItem.credit">{{formItem.credit}}</span>
+                               <span>
+                                    <router-link  :to="{name:'credit',params:{id:formItem.id}}">
+                                   <Button class="button2">信用分记录</Button>
+                                    </router-link>
+                               </span>
                             </FormItem>
 
                             <FormItem label="用户名" prop="username">
@@ -54,19 +66,19 @@
                             <FormItem label="生日年月" prop="date">
                                 <Row>
                                     <Col  span="11">
-                                        <DatePicker type="date" placeholder="Select date" v-model="formItem.date"></DatePicker>
+                                        <DatePicker type="date" placeholder="Select date" v-model="formItem.birth" @on-change="formItem.birth=$event" ></DatePicker>
                                     </Col>
                                 </Row>
                             </FormItem>
-                            <FormItem label="性别" prop="sex">
-                                <RadioGroup v-model="formItem.sex">
-                                    <Radio label="male">男</Radio>
-                                    <Radio label="female">女</Radio>
-                                    <Radio label="secret">保密</Radio>
+                            <FormItem label="性别" prop="sex" >
+                                <RadioGroup v-model="sex">
+                                    <Radio :label="0">男</Radio>
+                                    <Radio :label="1">女</Radio>
+                                    <Radio :label="2">保密</Radio>
                                 </RadioGroup>
                             </FormItem>
                             <FormItem label="个人介绍" prop="textarea">
-                                <Input style="width: 350px" v-model="formItem.textarea"  type="textarea"  :rows="4" placeholder="Enter something..."></Input>
+                                <Input style="width: 350px" v-model="formItem.profile"  type="textarea"  :rows="4" placeholder="Enter something..."></Input>
                             </FormItem>
                             <FormItem>
                                 <Button type="primary" @click="handleSubmit('formItem')">提交</Button>
@@ -85,12 +97,21 @@
                                 <a href="http://localhost:8080/personal">个人信息</a>
                             </MenuItem>
                             <MenuItem name="2">
-                                <Icon type="md-document"/>
+                                <Icon type="ios-book"/>
                                 <a href="http://localhost:8080/state">我的借阅</a>
                             </MenuItem>
                             <MenuItem name="3">
-                                <Icon type="md-chatbubbles" />
-                                退出
+                                <Icon type="md-person"/>
+                                <a href="http://localhost:8080/imgupload">我的头像</a>
+                            </MenuItem>
+                            <MenuItem name="4">
+                                <Icon type="md-person"/>
+                                <a href="http://localhost:8080/reset">修改密码</a>
+                            </MenuItem>
+                            <MenuItem name="5">
+                                <Icon type="ios-exit"  />
+                                <a @click="logout()">退出</a>
+
                             </MenuItem>
                             <!--<MenuItem name="3">-->
                                 <!--<Icon type="md-chatbubbles" />-->
@@ -154,15 +175,19 @@
         name: "personal",
         data () {
             return {
+                // formItem: {
+                //     id:"1",
+                //     grade:"",
+                //     username: '',
+                //     sex: 'male',
+                //     date: '1999-07-21',
+                //     textarea: 'THE 铭天下第一',
+                //
+                // },
                 formItem: {
-                    id:"1",
-                    grade:"100",
-                    username: 'ACG丶由乃',
-                    sex: 'male',
-                    date: '1999-07-21',
-                    textarea: 'THE 铭天下第一',
 
                 },
+                sex:'',
                 ruleValidate: {
                     username: [
                         { required: true, message: 'The name cannot be empty', trigger: 'blur' }
@@ -177,14 +202,42 @@
                     ],
                 },
                 serachInfo: '',
+                exist:'',
+                pinfo:[],
+
             }
         },
+
+
         methods: {
+
+            logout(){
+                var a=confirm("是否退出？")
+                if(a){
+                    this.$cookieStore.delCookie('username');
+                    this.$router.push("/login")
+                }
+
+            },
+
+
             handleSubmit (name) {
                 this.$refs[name].validate((valid) => {
+
                     if (valid) {
+                        axios.post('http://' + this.$store.state.address + ':8090/DDbook/user/updUser', {
+
+                            userId:this.formItem.userid,
+                            username:this.formItem.username,
+                            sex:this.sex,
+                            birth:this.formItem.birth,
+                            profile:this.formItem.profile
+                        }).then((res) => {
                         this.$Message.success('Success!');
-                    } else {
+                            location. reload()
+                    } )
+                    }
+                    else {
                         this.$Message.error('Fail!');
                     }
                 })
@@ -192,24 +245,45 @@
             handleReset (name) {
                 this.$refs[name].resetFields();
             },
-            dosearch() {
-                axios.post('http://'+this.$store.state.address+':8090/DDbook/book/selBookByName', {bookName: this.serachInfo,})
-                    .then((res)=>{
-
-                        this.$store.commit('setSerachInfo',res.data.data);
-                        this.$router.path({
-                            name: 'list2',
-
-                        })
-                        console.log(res.data.data);
-
-                    })
-            }
 
         },
 
+        created:function() {
+
+            if (this.$cookieStore.getCookie('username')) {
+                var username=this.$cookieStore.getCookie('username')
+                axios.post('http://' + this.$store.state.address + ':8090/DDbook/user/index',{
+                    username:username
+                }).then((res)=>{
+                    this.pinfo=res.data.data
+                    this.$store.commit('setId', this.pinfo.userid);
+                    axios.post('http://' + this.$store.state.address + ':8090/DDbook/user/person', {
+                        userId: this.$store.state.id,
+                    }).then((res) => {
+                        this.formItem = res.data.data;
+                        this.sex=this.formItem.usersex
+                        console.log(res.data.data)
+                        console.log(this.sex)
 
 
+                    })
+
+                })
+
+                this.exist = true
+            }
+            else {
+                this.exist = false
+            }
+            console.log(this.$cookieStore.getCookie('username'))
+
+        },
+
+        mounted() {
+
+
+
+        },
 
     }
 </script>
@@ -249,6 +323,13 @@
         width: 100%;
         height: 270px;
         background: transparent url(../images/header2.png) center center no-repeat;
+    }
+    .img10 {
+        width: 54px;
+        height: 56px;
+        border-radius: 75px;
+        overflow: hidden;
+        /*background: rgba(232, 116, 41, 0.13);*/
     }
 
     .content {

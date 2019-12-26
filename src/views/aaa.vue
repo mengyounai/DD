@@ -1,6 +1,7 @@
 <template>
     <div class="shrink-view" :style="{maxHeight: (mIsOpen?contentHeight:0) + 'px'}">
         <slot></slot>
+
     </div>
 
 
@@ -54,12 +55,11 @@
 
     .shrink-view {
         overflow: hidden;
-
-        -webkit-transition-duration: 300ms;
-        -moz-transition-duration: 300ms;
-        -ms-transition-duration: 300ms;
-        -o-transition-duration: 300ms;
-        transition-duration: 300ms;
+        -webkit-transition-duration: 1000ms;
+        -moz-transition-duration: 1000ms;
+        -ms-transition-duration: 1000ms;
+        -o-transition-duration: 1000ms;
+        transition-duration: 1000ms;
     }
 
 

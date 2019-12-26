@@ -15,6 +15,12 @@ import bbb from '../views/bbb'
 import state from '../views/state'
 import ccc from '../views/ccc'
 import credit from '../views/credit'
+import imgupload from '../views/imgupload'
+import success from '../views/success'
+import ddd from '../views/ddd'
+import reset from '../views/reset'
+import test from '../views/test'
+import question from '../views/question'
 Vue.use(VueRouter)
 
 const routes = [
@@ -93,6 +99,39 @@ const routes = [
         name:'list2',
         component:list2
     },
+    {
+        path:'/imgupload',
+        name:'imgupload',
+        component:imgupload
+    },
+    {
+        path:'/success',
+        name:'success',
+        component:success
+    },
+    {
+        path:'/ddd',
+        name:'ddd',
+        component:ddd
+    },
+    {
+        path:'/reset',
+        name:'reset',
+        component:reset
+    },
+    {
+        path:'/test',
+        name:'test',
+        component:test
+    },
+    {
+        path:'/question',
+        name:'question',
+        component:question
+    },
+
+
+
 ]
 
 const router = new VueRouter({

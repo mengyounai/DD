@@ -8,31 +8,31 @@
             <span class="text">注册</span>
             <span class="line"></span>
         </div>
-    <div class="register">
+            <div class="register">
         <div class="content">
         <p>
-            <Input  prefix="ios-book" v-model="username" placeholder="请输入用户名"  class="input" style="" @on-blur="validateUser()"/>
+        <Input  prefix="ios-book" v-model="username" placeholder="请输入用户名"  class="input" style="" @on-blur="validateUser()"/>
             <span class="err">{{errmsg1}}</span>
-        </p>
+    </p>
+    <p>
+    <Input  prefix="ios-book" v-model="password"  type="password" placeholder="请输入密码"  class="input"  @on-blur="validatePass()"/>
+        <span class="err">{{errmsg2}}</span>
+    </p>
+    <p>
+    <Input  prefix="ios-book" v-model="passagain"  type="password" placeholder="请再次确定密码"  class="input"  @on-blur="validatePass2()"/>
+        <span class="err">{{errmsg3}}</span>
+    </p>
+    <checkbox style="font-size: 14px"> 我已阅读并同意相关服务条款和隐私政策</checkbox>
         <p>
-            <Input  prefix="ios-book" v-model="password"  type="password" placeholder="请输入密码"  class="input"  @on-blur="validatePass()"/>
-            <span class="err">{{errmsg2}}</span>
+        <Button type="primary" class="btn" @click="doRegister()">注册</Button>
         </p>
-        <p>
-            <Input  prefix="ios-book" v-model="passagain"  type="password" placeholder="请再次确定密码"  class="input"  @on-blur="validatePass2()"/>
-            <span class="err">{{errmsg3}}</span>
-        </p>
-            <checkbox style="font-size: 14px"> 我已阅读并同意相关服务条款和隐私政策</checkbox>
-        <p>
-            <Button type="primary" class="btn" @click="doRegister()">注册</Button>
-        </p>
-            <router-link to="/login" style="margin-left: 230px;">已有账号，直接登录></router-link>
+        <router-link to="/login" style="margin-left: 230px;">已有账号，直接登录></router-link>
     </div>
     </div>
     </div>
-</template>
+    </template>
 
-<script>
+    <script>
     import axios from 'axios'
     export default {
         name: "Register",
@@ -53,58 +53,50 @@
                     this.errmsg1='用户名不能为空';
                     valid=false;
                 }
-                // else {
-                //     axios.get('http://192.168.164.130:8090/DDbook/user/reg',{params:{username:this.username}})
-                //         .then((res)=>{
-                //             if (res.data){
-                //                 this.errmsg1='用户名已存在'
-                //                 valid=false;
-                //             }
-                //         })
-                // }
+
                 if (valid == true)
                     this.errmsg1= '';
-                 return valid;
-                },
+                return valid;
+            },
 
-                validatePass(){
-                    let valid=true;
-                    if (this.password==''){
-                        this.errmsg2='密码不能为空';
+            validatePass(){
+                let valid=true;
+                if (this.password==''){
+                    this.errmsg2='密码不能为空';
+                    valid=false;
+                }
+                else {
+                    var reg=new RegExp(/^\w{6,16}$/)
+                    valid=reg.test(this.password);
+                    if (!valid)
+                        this.errmsg2='密码需为6-16位字符'
+                }
+                if (valid)
+                    this.errmsg2='';
+                return valid;
+            },
+            validatePass2(){
+                let valid=true;
+                if (this.passagain==""){
+                    valid=false;
+                    this.errmsg3='请输入确认密码';
+                }
+                else {
+                    if (this.passagain!=this.password){
                         valid=false;
+                        this.errmsg3="两次密码不一致"
                     }
-                    else {
-                        var reg=new RegExp(/^\w{6,16}$/)
-                        valid=reg.test(this.password);
-                        if (!valid)
-                            this.errmsg2='密码需为6-16位字符'
-                    }
-                    if (valid)
-                        this.errmsg2='';
-                    return valid;
-                },
-                validatePass2(){
-                    let valid=true;
-                    if (this.passagain==""){
-                        valid=false;
-                        this.errmsg3='请输入确认密码';
-                    }
-                    else {
-                        if (this.passagain!=this.password){
-                            valid=false;
-                            this.errmsg3="两次密码不一致"
-                        }
-                    }
-                    if (valid)
-                        this.errmsg3='';
-                    return valid;
-                },
-                validate(){
-                    let validate1 = this.validateUser();
-                    let validate2 = this.validatePass();
-                    let validate3 = this.validatePass2();
-                    return validate1&&validate2&&validate3;
-                },
+                }
+                if (valid)
+                    this.errmsg3='';
+                return valid;
+            },
+            validate(){
+                let validate1 = this.validateUser();
+                let validate2 = this.validatePass();
+                let validate3 = this.validatePass2();
+                return validate1&&validate2&&validate3;
+            },
 
             doRegister(){
                 if (this.validate()){
