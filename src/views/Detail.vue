@@ -455,14 +455,13 @@
                 state: '2',
                 boolean: true,
                 classStr1: '',
-                exist:'',
-                pinfo:[]
+                exist: '',
+                pinfo: []
 
 
             }
         },
         mounted() {
-
 
 
         },
@@ -478,11 +477,11 @@
                 }
 
                 if (this.$cookieStore.getCookie('username')) {
-                    var username=this.$cookieStore.getCookie('username')
-                    axios.post('http://' + this.$store.state.address + ':8090/DDbook/user/index',{
-                        username:username
-                    }).then((res)=>{
-                        this.pinfo=res.data.data
+                    var username = this.$cookieStore.getCookie('username')
+                    axios.post('http://' + this.$store.state.address + ':8090/DDbook/user/index', {
+                        username: username
+                    }).then((res) => {
+                        this.pinfo = res.data.data
                         this.$store.commit('setId', this.pinfo.userid);
                         axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/selBookById', {
                             bookId: id,
@@ -496,7 +495,6 @@
                                 this.count4 = res.data.data.number.count4
                                 this.count5 = res.data.data.number.count5
                                 this.grade2 = Math.round(this.prod.score)
-
 
 
                                 this.sum = this.count1 + this.count2 + this.count3 + this.count4 + this.count5
@@ -556,8 +554,76 @@
                     this.exist = true
                 }
                 else {
-                    this.exist = false
+
+                    axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/selBookById', {
+                        bookId: id,
+                        userId: this.$store.state.id
+                    })
+                        .then((res) => {
+                            this.prod = res.data.data;
+                            this.count1 = res.data.data.number.count1
+                            this.count2 = res.data.data.number.count2
+                            this.count3 = res.data.data.number.count3
+                            this.count4 = res.data.data.number.count4
+                            this.count5 = res.data.data.number.count5
+                            this.grade2 = Math.round(this.prod.score)
+
+
+                            this.sum = this.count1 + this.count2 + this.count3 + this.count4 + this.count5
+
+                            // this.personalinfo=res.data.data.discussList
+
+                            if (this.prod.number.b == false) {
+                                this.state = 0
+                            } else if (this.prod.number.stock == 0) {
+                                this.state = 1
+                            } else {
+                                this.state = 2
+                            }
+                            console.log(this.prod.number.b)
+                            console.log(this.state)
+
+                            var a = []
+                            a = res.data.data.discussList
+
+                            for (var i = 0; i < a.length; i++) {
+                                if (a[i].pldj == 0) {
+                                    this.personalinfo.push(a[i])
+                                }
+                            }
+                            for (var i = 0; i < a.length; i++) {
+                                if (a[i].pldj == 1) {
+                                    this.personalinfo2.push(a[i])
+                                }
+                            }
+
+
+                            for (var i = 0; i < this.personalinfo.length; i++) {
+                                for (var j = 0; j < this.personalinfo2.length; j++) {
+                                    if (this.personalinfo2[j].plid == this.personalinfo[i].disid) {
+                                        this.personalinfo[i].show3 = true
+                                    }
+                                }
+                            }
+                            for (var i = 0; i < this.personalinfo.length; i++) {
+                                if (this.personalinfo[i].state) {
+                                    this.personalinfo[i].classStr1 = ''
+
+
+                                } else {
+                                    this.personalinfo[i].classStr1 = 'blue'
+
+                                }
+                            }
+
+                            console.log(this.prod)
+                            console.log(this.personalinfo)
+                            console.log(this.personalinfo2)
+
+                        })
                 }
+
+
                 console.log(this.$cookieStore.getCookie('username'))
                 console.log(this.pinfo)
 
@@ -566,37 +632,42 @@
 
             doClick(index, item) {
 
-                if (this.personalinfo[index].state) {
-                    this.personalinfo[index].state=!this.personalinfo[index].state
-                    this.personalinfo[index].classStr1 = 'blue'
-                    this.boolean = false
+                if (this.$cookieStore.getCookie('username')) {
+
+                    if (this.personalinfo[index].state) {
+                        this.personalinfo[index].state = !this.personalinfo[index].state
+                        this.personalinfo[index].classStr1 = 'blue'
+                        this.boolean = false
+                    } else {
+                        this.personalinfo[index].state = !this.personalinfo[index].state
+                        this.personalinfo[index].classStr1 = ''
+                        this.boolean = true
+
+                    }
+
+
+                    axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/userLaud', {
+                        userId: this.$store.state.id,
+                        discussId: this.personalinfo[index].disid,
+                    }).then((res) => {
+
+
+                    })
+                    var laud = this.personalinfo[index].laud
+                    if (this.personalinfo[index].state) {
+
+                        laud--
+                    } else {
+
+                        laud++
+                    }
+                    this.$set(this.personalinfo[index], "laud", laud)
                 } else {
-                    this.personalinfo[index].state=!this.personalinfo[index].state
-                    this.personalinfo[index].classStr1 = ''
-                    this.boolean = true
-
+                    var a = confirm("请先登录完成操作")
+                    if (a) {
+                        this.$router.push("/login")
+                    }
                 }
-
-
-                axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/userLaud', {
-                    userId: this.$store.state.id,
-                    discussId: this.personalinfo[index].disid,
-                }).then((res) => {
-
-
-                })
-                var laud=this.personalinfo[index].laud
-                if (this.personalinfo[index].state) {
-
-                    laud--
-                }else {
-
-                    laud++
-                }
-
-                        this.$set(this.personalinfo[index], "laud",laud)
-
-
 
                 console.log(this.personalinfo[index].laud)
                 console.log(this.boolean)
@@ -635,105 +706,138 @@
                 return prod;
             },
             grade() {
-                axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/gradeBook', {
-                    userId: this.$store.state.id,
-                    bookISBN: this.prod.ISBN,
-                    grade: this.valueCustomText
-                })
-                    .then((res) => {
-                        var id = this.$route.params.id
+                if (this.$cookieStore.getCookie('username')) {
 
-                        if (id == null) {
-                            id = this.prod.id
-                        }
-
-
-                        axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/selBookById', {
-                            bookId: id,
-                            userId: this.$store.state.id
-                        })
-                            .then((res) => {
-                                this.prod = res.data.data;
-                                this.count1 = res.data.data.number.count1
-                                this.count2 = res.data.data.number.count2
-                                this.count3 = res.data.data.number.count3
-                                this.count4 = res.data.data.number.count4
-                                this.count5 = res.data.data.number.count5
-                                this.grade2 = Math.round(this.prod.score)
-
-
-                                this.sum = this.count1 + this.count2 + this.count3 + this.count4 + this.count5
-
-                            })
+                    axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/gradeBook', {
+                        userId: this.$store.state.id,
+                        bookISBN: this.prod.ISBN,
+                        grade: this.valueCustomText
                     })
+                        .then((res) => {
+                            var id = this.$route.params.id
+
+                            if (id == null) {
+                                id = this.prod.id
+                            }
 
 
+                            axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/selBookById', {
+                                bookId: id,
+                                userId: this.$store.state.id
+                            })
+                                .then((res) => {
+                                    this.prod = res.data.data;
+                                    this.count1 = res.data.data.number.count1
+                                    this.count2 = res.data.data.number.count2
+                                    this.count3 = res.data.data.number.count3
+                                    this.count4 = res.data.data.number.count4
+                                    this.count5 = res.data.data.number.count5
+                                    this.grade2 = Math.round(this.prod.score)
+
+
+                                    this.sum = this.count1 + this.count2 + this.count3 + this.count4 + this.count5
+
+                                })
+                        })
+
+                } else {
+                    var a = confirm("请先登录完成操作")
+                    if (a) {
+                        this.$router.push("/login")
+                    }
+                }
                 console.log(1)
 
             },
             submit1() {
-                if (this.text1=='') {
-                    alert("评论不能为空")
-                }
 
-                else {
-                    axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/userDiscuss', {
-                        userId: this.$store.state.id,
-                        bookISBN: this.prod.ISBN,
-                        discussid: '',
-                        plcon: this.text1
-                    }).then((res) => {
-                        if (res){
-                            alert("发送成功")
-                            this.text1 = ''
-                            location. reload()
+                if (this.$cookieStore.getCookie('username')) {
 
-                        } else {
-                            alert("发送失败")
-                        }
+                    if (this.text1 == '') {
+                        alert("评论不能为空")
+                    }
 
-                                })
+                    else {
+                        axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/userDiscuss', {
+                            userId: this.$store.state.id,
+                            bookISBN: this.prod.ISBN,
+                            discussid: '',
+                            plcon: this.text1
+                        }).then((res) => {
+                            if (res) {
+                                alert("发送成功")
+                                this.text1 = ''
+                                location.reload()
+
+                            } else {
+                                alert("发送失败")
+                            }
+
+                        })
 
 
-
+                    }
+                } else {
+                    var a = confirm("请先登录完成操作")
+                    if (a) {
+                        this.$router.push("/login")
+                    }
                 }
             },
             submit2(index) {
-                axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/userDiscuss', {
-                    userId: this.$store.state.id,
-                    bookISBN: this.prod.ISBN,
-                    discussid: this.personalinfo[index].disid,
-                    plcon: this.text2
-                })
-                    .then((res) => {
-                        if (res.data.code == 0) {
-                            alert("发送信息成功！")
-                            location. reload()
-                        } else {
-                            alert("错误！")
-                        }
-                        console.log(res)
+                if (this.$cookieStore.getCookie('username')) {
 
-
-                    })
-
-            },
-            borrow() {
-
-                if (this.state == 2) {
-                    var r = confirm("是否借阅")
-                    if (r) {
-                        axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/borrowBook', {
-                            userId: this.pinfo.userid,
-                            bookId: this.prod.id
+                    if (this.text2 == '') {
+                        alert("评论不能为空")
+                    }
+                    else
+                        axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/userDiscuss', {
+                            userId: this.$store.state.id,
+                            bookISBN: this.prod.ISBN,
+                            discussid: this.personalinfo[index].disid,
+                            plcon: this.text2
                         })
-                        this.state = 0
+                            .then((res) => {
+                                if (res.data.code == 0) {
+                                    alert("发送信息成功！")
+                                    location.reload()
+                                } else {
+                                    alert("错误！")
+                                }
+                                console.log(res)
+
+
+                            })
+                } else {
+                    var a = confirm("请先登录完成操作")
+                    if (a) {
+                        this.$router.push("/login")
                     }
                 }
-
-                console.log(this.state)
-
             },
+            borrow() {
+                if (this.$cookieStore.getCookie('username')) {
+
+                    if (this.state == 2) {
+                        var r = confirm("是否借阅")
+                        if (r) {
+                            axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/borrowBook', {
+                                userId: this.pinfo.userid,
+                                bookId: this.prod.id
+                            })
+                            this.state = 0
+                        }
+                    }
+
+                    console.log(this.state)
+                }
+                else {
+                    var a = confirm("请先登录完成操作")
+                    if (a) {
+                        this.$router.push("/login")
+                    }
+                }
+            }
         },
         computed: {
             a() {
@@ -843,6 +947,7 @@
     .header input, button {
         border-radius: 0px;
     }
+
     .img10 {
         width: 54px;
         height: 56px;

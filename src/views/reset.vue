@@ -79,7 +79,7 @@
         data () {
             return {
                 current: 0,
-                text1:'你的父亲名字',
+                text1:'',
                 text2:'',
                 show1:true,
                 show2:false,
