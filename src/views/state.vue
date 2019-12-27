@@ -61,9 +61,7 @@
                         </MenuItem>
                         <MenuItem name="6">
                             <Icon type="md-chatbubbles" />
-                            <a href="#">
-                            退出
-                            </a>
+                            <a @click="logout()">退出</a>
                         </MenuItem>
                     </MenuGroup>
                 </Menu>
@@ -247,6 +245,15 @@
         },
 
         methods: {
+
+            logout(){
+                var a=confirm("是否退出？")
+                if(a){
+                    this.$cookieStore.delCookie('username');
+                    this.$router.push("/login")
+                }
+
+            },
 
             change(val) {
                 this.current = val;

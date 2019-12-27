@@ -113,10 +113,6 @@
                                 <a @click="logout()">退出</a>
 
                             </MenuItem>
-                            <!--<MenuItem name="3">-->
-                                <!--<Icon type="md-chatbubbles" />-->
-                                <!--退出-->
-                            <!--</MenuItem>-->
                         </MenuGroup>
                     </Menu>
                 </div>
@@ -207,8 +203,6 @@
 
             }
         },
-
-
 
 
         methods: {

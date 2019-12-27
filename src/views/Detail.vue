@@ -286,6 +286,7 @@
 
 
         </div>
+        <Button @click="ceshi">电子竞技</Button>
 
     </div>
 </template>
@@ -452,7 +453,7 @@
                 text1: '',
                 text2: '',
                 text3: '',
-                state: '2',
+                state: '',
                 boolean: true,
                 classStr1: '',
                 exist: '',
@@ -469,164 +470,8 @@
 
         methods: {
 
-            init() {
-                var id = this.$route.params.id
-
-                if (id == null) {
-                    id = this.prod.id
-                }
-
-                if (this.$cookieStore.getCookie('username')) {
-                    var username = this.$cookieStore.getCookie('username')
-                    axios.post('http://' + this.$store.state.address + ':8090/DDbook/user/index', {
-                        username: username
-                    }).then((res) => {
-                        this.pinfo = res.data.data
-                        this.$store.commit('setId', this.pinfo.userid);
-                        axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/selBookById', {
-                            bookId: id,
-                            userId: this.$store.state.id
-                        })
-                            .then((res) => {
-                                this.prod = res.data.data;
-                                this.count1 = res.data.data.number.count1
-                                this.count2 = res.data.data.number.count2
-                                this.count3 = res.data.data.number.count3
-                                this.count4 = res.data.data.number.count4
-                                this.count5 = res.data.data.number.count5
-                                this.grade2 = Math.round(this.prod.score)
-
-
-                                this.sum = this.count1 + this.count2 + this.count3 + this.count4 + this.count5
-
-                                // this.personalinfo=res.data.data.discussList
-
-                                if (this.prod.number.b == false) {
-                                    this.state = 0
-                                } else if (this.prod.number.stock == 0) {
-                                    this.state = 1
-                                } else {
-                                    this.state = 2
-                                }
-                                console.log(this.prod.number.b)
-                                console.log(this.state)
-
-                                var a = []
-                                a = res.data.data.discussList
-
-                                for (var i = 0; i < a.length; i++) {
-                                    if (a[i].pldj == 0) {
-                                        this.personalinfo.push(a[i])
-                                    }
-                                }
-                                for (var i = 0; i < a.length; i++) {
-                                    if (a[i].pldj == 1) {
-                                        this.personalinfo2.push(a[i])
-                                    }
-                                }
-
-
-                                for (var i = 0; i < this.personalinfo.length; i++) {
-                                    for (var j = 0; j < this.personalinfo2.length; j++) {
-                                        if (this.personalinfo2[j].plid == this.personalinfo[i].disid) {
-                                            this.personalinfo[i].show3 = true
-                                        }
-                                    }
-                                }
-                                for (var i = 0; i < this.personalinfo.length; i++) {
-                                    if (this.personalinfo[i].state) {
-                                        this.personalinfo[i].classStr1 = ''
-
-
-                                    } else {
-                                        this.personalinfo[i].classStr1 = 'blue'
-
-                                    }
-                                }
-
-                                console.log(this.prod)
-                                console.log(this.personalinfo)
-                                console.log(this.personalinfo2)
-
-                            })
-                    })
-
-                    this.exist = true
-                }
-                else {
-
-                    axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/selBookById', {
-                        bookId: id,
-                        userId: this.$store.state.id
-                    })
-                        .then((res) => {
-                            this.prod = res.data.data;
-                            this.count1 = res.data.data.number.count1
-                            this.count2 = res.data.data.number.count2
-                            this.count3 = res.data.data.number.count3
-                            this.count4 = res.data.data.number.count4
-                            this.count5 = res.data.data.number.count5
-                            this.grade2 = Math.round(this.prod.score)
-
-
-                            this.sum = this.count1 + this.count2 + this.count3 + this.count4 + this.count5
-
-                            // this.personalinfo=res.data.data.discussList
-
-                            if (this.prod.number.b == false) {
-                                this.state = 0
-                            } else if (this.prod.number.stock == 0) {
-                                this.state = 1
-                            } else {
-                                this.state = 2
-                            }
-                            console.log(this.prod.number.b)
-                            console.log(this.state)
-
-                            var a = []
-                            a = res.data.data.discussList
-
-                            for (var i = 0; i < a.length; i++) {
-                                if (a[i].pldj == 0) {
-                                    this.personalinfo.push(a[i])
-                                }
-                            }
-                            for (var i = 0; i < a.length; i++) {
-                                if (a[i].pldj == 1) {
-                                    this.personalinfo2.push(a[i])
-                                }
-                            }
-
-
-                            for (var i = 0; i < this.personalinfo.length; i++) {
-                                for (var j = 0; j < this.personalinfo2.length; j++) {
-                                    if (this.personalinfo2[j].plid == this.personalinfo[i].disid) {
-                                        this.personalinfo[i].show3 = true
-                                    }
-                                }
-                            }
-                            for (var i = 0; i < this.personalinfo.length; i++) {
-                                if (this.personalinfo[i].state) {
-                                    this.personalinfo[i].classStr1 = ''
-
-
-                                } else {
-                                    this.personalinfo[i].classStr1 = 'blue'
-
-                                }
-                            }
-
-                            console.log(this.prod)
-                            console.log(this.personalinfo)
-                            console.log(this.personalinfo2)
-
-                        })
-                }
-
-
-                console.log(this.$cookieStore.getCookie('username'))
-                console.log(this.pinfo)
-
+            ceshi(){
+                console.log(this.$cookieStore.getCookie('username'));
             },
 
 
@@ -886,7 +731,7 @@
                 }
             },
             f() {
-                var sum = this.personalinfo.length
+                var sum = this.personalinfo.length - 1
                 return sum;
             },
             // laud(index){
@@ -907,13 +752,163 @@
 
         },
         watch: {
-            qq() {
 
-
-            }
         },
         created: function () {
-            this.init()
+            var id = this.$route.params.id
+
+            if (id == null) {
+                id = this.prod.id
+            }
+
+
+
+            if (this.$cookieStore.getCookie('username')) {
+                var username = this.$cookieStore.getCookie('username')
+                console.log(this.$cookieStore.getCookie('username'))
+
+                axios.post('http://' + this.$store.state.address + ':8090/DDbook/user/index', {
+                    username: username
+                }).then((res) => {
+                    this.pinfo = res.data.data
+                    this.$store.commit('setId', this.pinfo.userid);
+                    axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/selBookById', {
+                        bookId: id,
+                        userId: this.$store.state.id
+                    })
+                        .then((res) => {
+                            this.prod = res.data.data;
+                            console.log(this.prod.number.stock)
+                            this.count1 = res.data.data.number.count1
+                            this.count2 = res.data.data.number.count2
+                            this.count3 = res.data.data.number.count3
+                            this.count4 = res.data.data.number.count4
+                            this.count5 = res.data.data.number.count5
+                            this.grade2 = Math.round(this.prod.score)
+
+
+                            this.sum = this.count1 + this.count2 + this.count3 + this.count4 + this.count5
+
+                            // this.personalinfo=res.data.data.discussList
+
+                            if (this.prod.number.b == false) {
+                                this.state = 0
+                            } else if (this.prod.number.stock == 0) {
+                                this.state = 1
+                            } else {
+                                this.state = 2
+                            }
+                            console.log(this.prod.number.b)
+                            console.log(this.state)
+
+                            var a = []
+                            a = res.data.data.discussList
+
+                            for (var i = 0; i < a.length; i++) {
+                                if (a[i].pldj == 0) {
+                                    this.personalinfo.push(a[i])
+                                }
+                            }
+                            for (var i = 0; i < a.length; i++) {
+                                if (a[i].pldj == 1) {
+                                    this.personalinfo2.push(a[i])
+                                }
+                            }
+
+
+                            for (var i = 0; i < this.personalinfo.length; i++) {
+                                for (var j = 0; j < this.personalinfo2.length; j++) {
+                                    if (this.personalinfo2[j].plid == this.personalinfo[i].disid) {
+                                        this.personalinfo[i].show3 = true
+                                    }
+                                }
+                            }
+                            for (var i = 0; i < this.personalinfo.length; i++) {
+                                if (this.personalinfo[i].state) {
+                                    this.personalinfo[i].classStr1 = ''
+
+
+                                } else {
+                                    this.personalinfo[i].classStr1 = 'blue'
+
+                                }
+                            }
+                            console.log("有用户:"+1)
+
+                            console.log(this.prod)
+                            console.log(this.personalinfo)
+                            console.log(this.personalinfo2)
+
+                        })
+                })
+
+                this.exist = true
+            }
+            else {
+
+                axios.post('http://' + this.$store.state.address + ':8090/DDbook/book/selBookById', {
+                    bookId: id,
+                    userId: this.$store.state.id
+                })
+                    .then((res) => {
+                        this.prod = res.data.data;
+                        this.count1 = res.data.data.number.count1
+                        this.count2 = res.data.data.number.count2
+                        this.count3 = res.data.data.number.count3
+                        this.count4 = res.data.data.number.count4
+                        this.count5 = res.data.data.number.count5
+                        this.grade2 = Math.round(this.prod.score)
+
+
+                        this.sum = this.count1 + this.count2 + this.count3 + this.count4 + this.count5
+
+                        // this.personalinfo=res.data.data.discussList
+
+
+                        this.state = 2
+
+                        console.log("无用户:"+2)
+                        console.log(this.state)
+
+                        var a = []
+                        a = res.data.data.discussList
+
+                        for (var i = 0; i < a.length; i++) {
+                            if (a[i].pldj == 0) {
+                                this.personalinfo.push(a[i])
+                            }
+                        }
+                        for (var i = 0; i < a.length; i++) {
+                            if (a[i].pldj == 1) {
+                                this.personalinfo2.push(a[i])
+                            }
+                        }
+
+
+                        for (var i = 0; i < this.personalinfo.length; i++) {
+                            for (var j = 0; j < this.personalinfo2.length; j++) {
+                                if (this.personalinfo2[j].plid == this.personalinfo[i].disid) {
+                                    this.personalinfo[i].show3 = true
+                                }
+                            }
+                        }
+                        for (var i = 0; i < this.personalinfo.length; i++) {
+                            if (this.personalinfo[i].state) {
+                                this.personalinfo[i].classStr1 = ''
+
+
+                            } else {
+                                this.personalinfo[i].classStr1 = 'blue'
+
+                            }
+                        }
+
+
+                    })
+            }
+
+            console.log(this.pinfo)
+
 
         },
     }

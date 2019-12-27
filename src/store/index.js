@@ -13,7 +13,7 @@ export default new Vuex.Store({
       bookserach:[],
       SerachInfo:[],
       id:'',
-      address:'192.168.161.183',
+      address:'192.168.160.180',
 
 
 
